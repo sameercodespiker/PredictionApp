@@ -12,6 +12,7 @@
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
     <guid>4abf8763-46b7-4697-b52d-983903a0f3c9</guid>
+     <property name="ti.facebook.appid">704027519640918</property>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <ios>
         <plist>
@@ -47,7 +48,12 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <modules/>
+    <modules>
+        <!-- Add this line to your modules section -->
+        <module platform="iphone">ti.map</module>
+        <module platform="android">facebook</module>
+        <module platform="iphone">facebook</module>
+    </modules>
     <deployment-targets>
         <target device="android">true</target>
         <target device="blackberry">false</target>
