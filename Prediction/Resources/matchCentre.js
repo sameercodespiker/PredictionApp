@@ -1,10 +1,16 @@
-var message = "BrazilvsCrotia%%MexicovsCameroon%%SpainvsNetherland%%ChilevsAustralia%%ColombiavsGreece%%UruguayvsCosta-Rica%%EnglandvsItaly%%Ivory-CoastvsJapan";
+var win3 = Ti.UI.createWindow({
+	title: 'Match centre',
+	url: 'Prediction.js',
+	backgroundColor: '#8ac60c'
+});
+
+var message = "BrazilvsCroatia%%MexicovsCameroon%%SpainvsNetherlands%%ChilevsAustralia%%ColombiavsGreece%%UruguayvsCosta-Rica%%EnglandvsItaly%%Ivory-CoastvsJapan";
 var matches = [];
 var teamAimage = [];
 var teamBimage = [];
 var teamAlabel = [];
 var teamBlabel = [];
-//var vs = [];
+
 var matchesScrollView = Ti.UI.createScrollView({
 	backgroundColor: '#8ac60c'
 });
@@ -21,10 +27,14 @@ for (var i = 0; i < match_list.length; i++)
 			left: '10%',
 			width: '80%',
 			title: match_list[i],
-			backgroundImage: 'ViewBackground.png'
+			backgroundImage: 'ViewBackground.png',
+			teamA: '',
+			teamB: '' 
 		});
 		
 		var teams = match_list[i].split('vs');
+		matches[i].teamA = teams[0];
+		matches[i].teamB = teams[1];
 		teamAlabel[i] = Ti.UI.createLabel({
 			text: teams[0],
 			top: '35%',
@@ -43,32 +53,27 @@ for (var i = 0; i < match_list.length; i++)
 		teamAimage[i] = Ti.UI.createImageView({
 			top: '10%',
 			left: '5%',
-			height: '30%',
+			height: '35%',
 			width: '10%',
 			image: teamAname
 		});
 		teamBimage[i] = Ti.UI.createImageView({
 			bottom: '10%',
 			right: '5%',
-			height: '30%',
+			height: '35%',
 			width: '10%',
 			image: teamBname
 		}); 
 		matches[i].add(teamAimage[i]);
 		matches[i].add(teamBimage[i]);
 		
-/*		vs[i] = Ti.UI.createImageView({
-			image: 'Vs.png',
-			center: {x:'50%' , y:'50%'},
-			height: '65%',
-			width: '25%',
-		});  
-		matches[i].add(vs[i]); */
 		matchesScrollView.add(matches[i]);
 		
 		matches[i].addEventListener('click', function(e){
-			Ti.API.log("I AM HERE");
-			e.source.height = e.height + 40;
+			Ti.App.currentNavGroup.openWindow(win3);
+			Ti.App.TeamAName = e.source.teamA;
+			Ti.App.TeamBName = e.source.teamB;
+
 		});
 	}
 

@@ -10,13 +10,10 @@ var win2 = Ti.UI.createWindow({
 	url: 'matchCentre.js'
 });
 
-/*var wcImage = Ti.UI.createImageView({
-	image: 'Brazil.png',
-	top: '0%',
-	left: '10%'	,
-	height: '50%',
-	width: '50%'
-}); */
+var NavGroup = Ti.UI.iOS.createNavigationWindow({
+	window: win2
+	});
+
 
 var userId = Ti.UI.createLabel({
 	title:'No user Id',
@@ -83,9 +80,7 @@ checkUseridButton.addEventListener('click', function(e){
 		{
 			Ti.UI.createAlertDialog({title:'Facebook', message:'Login before accessing properties'}).show();
 			return;
-		}
-		
-		
+		}	
 });
 
 var nextWinButton = Ti.UI.createButton({
@@ -97,7 +92,8 @@ var nextWinButton = Ti.UI.createButton({
 
 nextWinButton.addEventListener('click', function(e){
 	win1.close();
-	win2.open();
+	Ti.App.currentNavGroup = NavGroup;
+	NavGroup.open();
 });
 //win1.add(wcImage);
 win1.add(checkUseridButton);
