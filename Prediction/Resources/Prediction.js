@@ -287,6 +287,9 @@ GoalsSelectB.addEventListener('itemclick', function(e){
 GoalsSelectC.addEventListener('itemclick', function(e){
 	DrawGoal = section2.getItemAt(e.itemIndex).properties.title;
 	Ti.API.log(DrawGoal);
+	var goal = DrawGoal.split('-');
+	GoalTeamA = goal[0];
+	GoalTeamB =  goal[1];
 	SubmitButton.show();
 });
 
@@ -302,15 +305,42 @@ Ti.UI.currentWindow.add(SubmitButton);
 SubmitButton.hide();
 
 SubmitButton.addEventListener('click', function(e){
-	Ti.API.log(parseInt(GoalTeamA));
-	Ti.API.log(parseInt(GoalTeamB));
+	Ti.API.log("Checking Goals: " + parseInt(GoalTeamA) + " " + parseInt(GoalTeamB));
+	
 	if (drawButton.toggle == true)
 	{
 		var dialog = Ti.UI.createAlertDialog({
     		message: 'Your Prediction is : ' + DrawGoal,
-    		ok: 'Okay',
+    		buttonNames: ['Confirm', 'Cancel'],
     		title: 'Confirm Your Score'
- 		}).show();
+ 	});
+ 		
+ 	dialog.addEventListener('click', function(e){
+   		if (e.index === 0)
+    	{
+      		Ti.API.info('The confirm button was clicked');
+    		var xhr = Ti.Network.createHTTPClient();
+    		xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
+    		xhr.setRequestHeader('User-Agent','My User Agent');
+    		xhr.onload = function()
+     	{
+      		Ti.API.log("Fr response is : " + this.responseText);
+
+     	};
+     
+      	xhr.send({
+        	"teamGoalsA":parseInt(GoalTeamA),
+        	"teamGoalsB":parseInt(GoalTeamB),
+        	"Prediction":Ti.App.Fbid
+		});
+    	}
+    	
+    	if (e.index === 1)
+   		{
+   			Ti.API.log('Cancel was clicked');
+   		}
+  	});
+  	dialog.show();
 	}
 	if (winButton.toggle == true)
 	{
@@ -334,9 +364,34 @@ SubmitButton.addEventListener('click', function(e){
 		{
 			var dialog = Ti.UI.createAlertDialog({
     			message: 'Your Prediction is : ' + GoalTeamA + " - " + GoalTeamB,
-    			ok: 'Okay',
+    			buttonNames: ['Confirm', 'Cancel'],
     			title: 'Confirm Your Score'
- 			}).show();
+ 			});
+ 			dialog.addEventListener('click', function(e){
+   				if (e.index === 0)
+    			{
+      				Ti.API.info('The confirm button was clicked');
+    				var xhr = Ti.Network.createHTTPClient();
+    				xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
+    				xhr.setRequestHeader('User-Agent','My User Agent');
+    				xhr.onload = function()
+     			{
+      				Ti.API.log("Fr response is : " + this.responseText);
+				};
+     
+      			xhr.send({
+        			"teamGoalsA":GoalTeamA,
+        			"teamGoalsB":GoalTeamB,
+        			"Prediction":Ti.App.Fbid
+				});
+    			}
+    	
+    			if (e.index === 1)
+   				{
+   					Ti.API.log('Cancel was clicked');
+   				}
+  				});
+  			dialog.show();
 		}
 	}
 	if (winBButton.toggle == true)
@@ -346,7 +401,7 @@ SubmitButton.addEventListener('click', function(e){
 		{
 			var dialog = Ti.UI.createAlertDialog({
     			message: 'Your score prediction does not match with your match result prediction ' ,
-    			ok: 'Okay',
+    			ok: 'Okay', 
     			title: 'Confirm Your Score'
  			}).show();
 		}
@@ -362,14 +417,39 @@ SubmitButton.addEventListener('click', function(e){
 		{
 			var dialog = Ti.UI.createAlertDialog({
     			message: 'Your Prediction is : ' + GoalTeamA + " - " + GoalTeamB,
-    			ok: 'Okay',
+    			buttonNames: ['Confirm', 'Cancel'],
     			title: 'Confirm Your Score'
- 			}).show();
+ 			});
+ 			dialog.addEventListener('click', function(e){
+   			if (e.index === 0)
+    		{
+      			Ti.API.info('The confirm button was clicked');
+    			var xhr = Ti.Network.createHTTPClient();
+    			xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
+    			xhr.setRequestHeader('User-Agent','My User Agent');
+    			xhr.onload = function()
+     			{
+      				Ti.API.log("Fr response is : " + this.responseText);
+
+     			};
+     
+      			xhr.send({
+        			"teamGoalsA":GoalTeamA,
+        			"teamGoalsB":GoalTeamB,
+        			"Prediction":Ti.App.Fbid
+				});
+    		}
+    	
+    		if (e.index === 1)
+   			{
+   				Ti.API.log('Cancel was clicked');
+   			}
+  			});
+    		dialog.show();
 		}
 		
 	}
 });
-
 
 Ti.UI.currentWindow.add(winButton);
 Ti.UI.currentWindow.add(drawButton);

@@ -1,3 +1,4 @@
+	Ti.include('suds.js');
 
 var win1 = Titanium.UI.createWindow({  
     title:'Window 1',
@@ -6,8 +7,9 @@ var win1 = Titanium.UI.createWindow({
 });
 
 var win2 = Ti.UI.createWindow({
-	title: 'Match centre',
-	url: 'matchCentre.js'
+	title: 'Match Center',
+	url: 'matchCentre.js',
+	backgroundColor: '#8ac60c'
 });
 
 var NavGroup = Ti.UI.iOS.createNavigationWindow({
@@ -34,9 +36,19 @@ var checkUseridButton = Ti.UI.createButton({
 	width: '60%'
 });
 
+var queryButton =  Ti.UI.createButton({
+		title:'Run Query',
+		width:200,
+		height:40,
+		top:10
+	});
+
+win1.add(queryButton);
+
 var fb = require('facebook');
-fb.appid = 704027519640918;
-fb.permissions = ['publish_stream', 'read_stream'];
+fb.appid = 200188770129860;
+//fb.appid = 495338853813822;
+fb.permissions = ['user_friends' , 'publish_stream', 'read_stream'];
 fb.addEventListener('login', function(e) 
 {
     if (e.success) 
@@ -49,7 +61,11 @@ fb.addEventListener('login', function(e)
     		var JsonString = e.result;
     		var FbDetailObject = JSON.parse(JsonString);
     		userId.text = FbDetailObject.name + " " + fb.uid;
-        	alert(e.result + " This is my Data");
+    		Ti.App.Fbid = fb.uid;
+        	Ti.API.log(e.result + " This is my Data");
+        	//win1.close();
+			//Ti.App.currentNavGroup = NavGroup;
+			//NavGroup.open();
    		} 
    		else if (e.error) 
    		{
@@ -66,7 +82,7 @@ fb.addEventListener('login', function(e)
 fb.addEventListener('logout', function(e) {
     	//alert('Logged out');
 });
- fb.authorize(); 
+
 // Add the button.  Note that it doesn't need a click event listener.
 win1.add(fb.createLoginButton({
     top : '60%',
@@ -76,7 +92,7 @@ win1.add(fb.createLoginButton({
 }));
 
 checkUseridButton.addEventListener('click', function(e){
-	if (!fb.loggedIn)
+if (!fb.loggedIn)
 		{
 			Ti.UI.createAlertDialog({title:'Facebook', message:'Login before accessing properties'}).show();
 			return;
@@ -95,7 +111,73 @@ nextWinButton.addEventListener('click', function(e){
 	Ti.App.currentNavGroup = NavGroup;
 	NavGroup.open();
 });
-//win1.add(wcImage);
+
+
+queryButton.addEventListener('click', function(e){
+
+/*	fb.requestWithGraphPath('me/friends',{}, 'GET', function(e)
+	{
+    	if (e.success) 
+    	{	
+    		var Jsona = e.result;
+    		var result = JSON.parse(Jsona);
+    		
+    		for (var c=0; c<result.length; c++)
+			{
+				var row = result[c];
+				Ti.API.log("for loop: " + c + " " + result[c]);
+			}
+    		Ti.API.log("Success!  From FB: " + result);
+    	} 
+    	else
+    	{
+        	if (e.error) 
+        	{
+            	alert(e.error);
+        	}
+        	else
+        	{
+            	alert("Unkown result");
+       		}
+    	}
+	}); */
+	
+		var query = "SELECT uid, name, pic_square, status FROM user ";
+		query +=  "where uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fb.uid + ")";
+		//query += "order by last_name limit 20";
+		Ti.API.info('user id ' + fb.uid);
+		fb.request('fql.query', {query: query},  function(r) {
+			if (!r.success) {
+				if (r.error) {
+					alert(r.error);
+				} else {
+					alert("call was unsuccessful");
+				}
+				return;
+			}
+			var result = JSON.parse(r.result);
+			var data = [];
+			var xhr = Ti.Network.createHTTPClient();
+    		
+			for (var c = 0; c < result.length ; c++)
+			{
+				var row = result[c];
+				Ti.API.log(c + " " + row.uid);
+				xhr.open('POST','http://codespikestudios.com/prediction/GetFriends.php');
+    			xhr.setRequestHeader('User-Agent','My User Agent');
+    			xhr.onload = function()
+     			{
+      				Ti.API.log("Fr response is : " + c + " " + row.uid + "  " + this.responseText);
+
+     			};
+     			
+      			xhr.send({
+        			"teamGoalsA": row.uid,
+				});
+			}
+		}); 
+});
+
 win1.add(checkUseridButton);
 win1.add(userId);
 win1.add(nextWinButton);
