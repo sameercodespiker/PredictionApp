@@ -155,26 +155,106 @@ queryButton.addEventListener('click', function(e){
 				}
 				return;
 			}
-			var result = JSON.parse(r.result);
-			var data = [];
-			var xhr = Ti.Network.createHTTPClient();
-    		
-			for (var c = 0; c < result.length ; c++)
-			{
-				var row = result[c];
-				Ti.API.log(c + " " + row.uid);
-				xhr.open('POST','http://codespikestudios.com/prediction/GetFriends.php');
-    			xhr.setRequestHeader('User-Agent','My User Agent');
-    			xhr.onload = function()
-     			{
-      				Ti.API.log("Fr response is : " + c + " " + row.uid + "  " + this.responseText);
-
-     			};
-     			
-      			xhr.send({
-        			"teamGoalsA": row.uid,
-				});
+			else{
+				
+				var result = JSON.parse(r.result);
+				
+    			var message = "";
+				for (var c = 0; c < result.length ; c++)
+				{
+					var row = result[c];
+					Ti.API.log(c + " " + row.uid);
+					message = message + row.uid + "%%";
+					
+					
+				}	
+					var RetrievedText = "";
+					var xhr = Ti.Network.createHTTPClient();
+					xhr.open('POST','http://codespikestudios.com/prediction/GetFriends.php');
+    				xhr.setRequestHeader('User-Agent','My User Agent');
+    				xhr.onload = function()
+     				{	
+     					RetrievedText = this.responseText;
+     					Ti.API.log("Fr response is : " + this.responseText);
+     					var win = Ti.UI.createWindow({title:'Facebook Query'});
+     					var tableView = Ti.UI.createTableView({minRowHeight:100});
+						win.add(tableView);
+						var data = [];
+     					if (RetrievedText == null)
+     					{
+     						win.open();
+     					}
+     					else
+     					{
+     						var Rows = RetrievedText.split("-");
+							
+      						for (var d = 0 ; d < Rows.length ; d++)
+							{	
+								for (var c = 0; c < result.length ; c++)
+								{	
+								//Ti.API.log(Rows[d]);
+									var Getuid = Rows[d].split(" ");
+									var uid = Getuid[2];
+									var row_b = result[c];
+									if (row_b.uid == uid)
+									{
+										Ti.API.log(uid);
+										var tvRow = Ti.UI.createTableViewRow({
+											height:'auto',
+											selectedBackgroundColor:'#fff',
+											backgroundColor:'#fff'
+										});
+										var imageView;
+										imageView = Ti.UI.createImageView({
+											image:row_b.pic_square === null ? '/images/custom_tableview/user.png' : row_b.pic_square,
+											left:10,
+											width:50,
+											height:50
+										});
+	
+										tvRow.add(imageView);
+	
+										var userLabel = Ti.UI.createLabel({
+											font:{fontSize:16, fontWeight:'bold'},
+											left:70,
+											top:5,
+											right:5,
+											height:20,
+											color:'#576996',
+											text:row_b.name
+										});
+										tvRow.add(userLabel);
+	
+										var statusLabel = Ti.UI.createLabel({
+											font:{fontSize:13},
+											left:70,
+											top:25,
+											right:20,
+											height:'auto',
+											color:'#222',
+											text: Getuid[0] + " - " + Getuid[1]
+										});
+										tvRow.add(statusLabel);
+		
+										tvRow.uid = row_b.uid;
+		
+										data[c] = tvRow;
+									}
+								}
+							}
+								tableView.setData(data, { animationStyle : Titanium.UI.iPhone.RowAnimationStyle.DOWN });
+								win.open({modal:true});
+    
+     					}
+     					 				};
+					
+      				xhr.send({
+        				"FriendsUID": message,
+        				"GameID": "Match 10"
+					}); 
+				Ti.API.info(message);
 			}
+			
 		}); 
 });
 

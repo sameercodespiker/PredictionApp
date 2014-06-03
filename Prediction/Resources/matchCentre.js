@@ -35,7 +35,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 	    	suds_abc.invoke('AllGames', callparams_abc, function(xmlDoc) {
 	        var team2 = xmlDoc.documentElement.getElementsByTagName('sName');
 	        var TeamFlags = xmlDoc.documentElement.getElementsByTagName('sCountryFlagLarge');
-			
+			//var MatchID = xmlDoc.documentElement.getElementsByTagName('sDescription');
 	        if (team2 && team2.length>0) 
 	        {
 	            	var MatchCount = 1;
@@ -66,6 +66,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 
 					for (var i = 0; i < match_list.length; i++)
 					{	
+						var MatchID = "Match " + (i+1).toString();
 						var topValue = 10 + (viewH * i);
 						matches[i]= Ti.UI.createView({
 							top: topValue,
@@ -75,9 +76,10 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 							title: match_list[i],
 							backgroundImage: 'ViewBackground.png',
 							teamA: '',
-							teamB: '' 
+							teamB: '',
+							Match: MatchID
 						});
-		
+					Ti.API.log(MatchID);
 					var teams = match_list[i].split('vs');
 					matches[i].teamA = teams[0];
 					matches[i].teamB = teams[1];
@@ -116,11 +118,106 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 					matchesScrollView.add(matches[i]);
 		
 					matches[i].addEventListener('click', function(e){
-						Ti.App.currentNavGroup.openWindow(win3);
+						
 						Ti.App.TeamAName = e.source.teamA;
 						Ti.App.TeamBName = e.source.teamB;
+						Ti.App.MatchID = e.source.Match;
+						var xhr = Ti.Network.createHTTPClient();
+   						xhr.open('POST','http://codespikestudios.com/prediction/UserCheck.php');
+    					xhr.setRequestHeader('User-Agent','My User Agent');
+    					xhr.onload = function()
+     					{
+       						Ti.API.log("Fr response is : " + this.responseText);
+       						if (this.responseText == null)
+       						{
+       							Ti.App.currentNavGroup.openWindow(win3);
+       						}
+       						else
+       						{
+       							Ti.API.log("I am here");
+       							var AlreadyPredictedWindow = Ti.UI.createWindow({
+       									title: 'Match Prediction',
+										backgroundColor: '#8ac60c'
+       							});
+       							var UserPrediction = this.responseText.split("%");
+       							var label = Ti.UI.createLabel({
+       								Text: 'You predicted this  :' + '\n' + UserPrediction[0] + ' ' + e.source.teamA + ' ' + UserPrediction[1] + ' ' + e.source.teamB 
+       							});
+       							AlreadyPredictedWindow.add(label);
+       						    var teamAname_A = e.source.teamA + "-Flag-256.png";
+								var teamBname_B = e.source.teamB + "-Flag-256.png";	
+								teamAimage = Ti.UI.createImageView({
+									top: '5%',
+									left: '5%',
+									height: '25%',
+									width: '30%',
+									image: teamAname_A
+								});
+								teamBimage = Ti.UI.createImageView({
+									top: '5%',
+									right: '5%',
+									height: '25%',
+									width: '30%',
+									image: teamBname_B
+								}); 
+								var score_label = Ti.UI.createLabel({
+									bottom: '10%'
+								});
+								
+								if (UserPrediction[4] == "TBP")
+								{	Ti.API.log(UserPrediction[4].text);
+									score_label.text = "This game is still to be played";
+									AlreadyPredictedWindow.add(score_label);
+									
+								}
+								else
+								{   Ti.API.log(UserPrediction[4]);
+									var Goals = UserPrediction[4].split("-");
+									if (UserPrediction[0] == Goals[0] && UserPrediction[1] == Goals[1] )
+									{	
+										if (UserPrediction[5] == "0")
+										{	
+											Ti.API.log("Inserting Score");
+											var xhr_a = Ti.Network.createHTTPClient();
+											xhr_a.open('POST','http://codespikestudios.com/prediction/matchScore.php');
+											xhr_a.setRequestHeader('User-Agent','My User Agent');
+											xhr_a.onload = function()
+											{
+												Ti.API.log("Inserted " + this.responseText);
+												score_label.text = "You scored " + this.responseText  + "points";
+												AlreadyPredictedWindow.add(score_label);
+												
+											};
+																	     
+											xhr_a.send({
+														"UserID" : Ti.Fbid,
+														"GameID" : Ti.App.MatchID,
+														"Score": 20
+											});
+										}
+										else
+										{
+											Ti.API.log("jdbvjoba");
+										}
+									}
+									else
+									{
+										Ti.API.log("Galat prediction");
+									}
+								}
+								AlreadyPredictedWindow.add(teamAimage);
+								AlreadyPredictedWindow.add(teamBimage);
+       							Ti.App.currentNavGroup.openWindow(AlreadyPredictedWindow);
+       						}
 
+     					};
+     
+        				xhr.send({
+        					"UserID": Ti.App.Fbid,
+        					"GameID": Ti.App.MatchID
+    					});
 					});
+					
 					Ti.UI.currentWindow.add(matchesScrollView);
 					}
 
