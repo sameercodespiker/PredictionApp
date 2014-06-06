@@ -49,7 +49,7 @@ function Get_friends(){
 						var data = [];
      					if (RetrievedText == null)
      					{
-     						Ti.App.currentNavGroup.openWindow(win);
+     						Ti.App.Tab.open(win);
      					}
      					else
      					{
@@ -116,10 +116,10 @@ function Get_friends(){
 								});
 								win.leftNavButton = NavButton;
 								NavButton.addEventListener('click', function(e){
-									Ti.App.currentNavGroup.openWindow(win2);
+									Ti.App.tab.open(win2);
 								}); 
 								
-								Ti.App.currentNavGroup.openWindow(win);
+								Ti.App.Tab.open(win);
     
      					}
      					 				};
@@ -243,14 +243,6 @@ var teamBimage = Ti.UI.createImageView({
 	height: '25%',
 	width: '30%',
 	image: teamBname
-}); 
-
-var Vsimage = Ti.UI.createImageView({
-	top: '15%',
-	right: '40%%',
-	height: '10%',
-	width: '20%',
-	image: 'Vs.png'
 });  
 
 var winButton = Ti.UI.createButton({
@@ -258,8 +250,7 @@ var winButton = Ti.UI.createButton({
 	left: '2.5%',
 	height: '10%',
 	width: '30%',
-	backgroundImage: 'greenbutton.png',
-	title: 'WIN',
+	backgroundImage: 'button_win.png',
 	toggle: false
 });
 
@@ -268,8 +259,7 @@ var drawButton = Ti.UI.createButton({
 	left: '35%',
 	height: '10%',
 	width: '30%',
-	backgroundImage: 'greenbutton.png',
-	title: 'DRAW',
+	backgroundImage: 'button_draw.png',
 	toggle: false
 });
 
@@ -278,8 +268,7 @@ var winBButton = Ti.UI.createButton({
 	left: '67.5%',
 	height: '10%',
 	width: '30%',
-	backgroundImage: 'greenbutton.png',
-	title: 'WIN',
+	backgroundImage: 'button_win.png',
 	toggle: false
 });
 
@@ -289,17 +278,17 @@ winButton.addEventListener('click', function(e){
 	if (drawButton.toggle == true)
 	{
 		drawButton.toggle = false;
-		drawButton.backgroundImage = "greenbutton.png";
+		drawButton.backgroundImage = "button_draw.png";
 	}
 	if (winBButton.toggle == true)
 	{
 		winBButton.toggle = false;
-		winBButton.backgroundImage = "greenbutton.png";
+		winBButton.backgroundImage = "button_win.png";
 	}
 	if (e.source.toggle == false)
 	{
 		e.source.toggle = true;
-		e.source.backgroundImage = "bluebutton.png";
+		e.source.backgroundImage = "button_win_pressed.png";
 		GoalsSelectA.show();
 		//GoalsSelectB.show();
 		GoalsSelectC.hide();
@@ -311,17 +300,17 @@ drawButton.addEventListener('click', function(e){
 	if (winButton.toggle == true)
 	{
 		winButton.toggle = false;
-		winButton.backgroundImage = "greenbutton.png";
+		winButton.backgroundImage = "button_win.png";
 	}
 	if (winBButton.toggle == true)
 	{
 		winBButton.toggle = false;
-		winBButton.backgroundImage = "greenbutton.png";
+		winBButton.backgroundImage = "button_win.png";
 	}
 	if (e.source.toggle == false)
 	{
 		e.source.toggle = true;
-		e.source.backgroundImage = "bluebutton.png";
+		e.source.backgroundImage = "button_draw_pressed.png";
 		GoalsSelectA.hide();
 		GoalsSelectB.hide();
 		GoalsSelectC.show();
@@ -334,17 +323,17 @@ winBButton.addEventListener('click', function(e){
 	if (winButton.toggle == true)
 	{
 		winButton.toggle = false;
-		winButton.backgroundImage = "greenbutton.png";
+		winButton.backgroundImage = "button_win.png";
 	}
 	if (drawButton.toggle == true)
 	{
 		drawButton.toggle = false;
-		drawButton.backgroundImage = "greenbutton.png";
+		drawButton.backgroundImage = "button_draw.png";
 	}
 	if (e.source.toggle == false)
 	{
 		e.source.toggle = true;
-		e.source.backgroundImage = "bluebutton.png";
+		e.source.backgroundImage = "button_win_pressed.png";
 		//GoalsSelectA.show();
 		GoalsSelectB.show();
 		GoalsSelectC.hide();
@@ -455,7 +444,7 @@ SubmitButton.addEventListener('click', function(e){
     		title: 'Confirm Your Score'
  	});
  		
- 	dialog.addEventListener('click', function(e){
+	dialog.addEventListener('click', function(e){
    		if (e.index === 0)
     	{
       		Ti.API.info('The confirm button was clicked');
@@ -463,18 +452,18 @@ SubmitButton.addEventListener('click', function(e){
     		xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
     		xhr.setRequestHeader('User-Agent','My User Agent');
     		xhr.onload = function()
-     	{
-      		Ti.API.log("Fr response is : " + this.responseText);
+     		{
+      			Ti.API.log("Fr response is : " + this.responseText);
 
-     	};
+     		};
      
-      	xhr.send({
-        	"teamGoalsA":parseInt(GoalTeamA),
-        	"teamGoalsB":parseInt(GoalTeamB),
-        	"FbID":Ti.App.Fbid,
-        	"matchID": Ti.App.MatchID
-		});
-		Get_friends();
+      		xhr.send({
+        		"teamGoalsA":parseInt(GoalTeamA),
+        		"teamGoalsB":parseInt(GoalTeamB),
+        		"FbID":Ti.App.Fbid,
+        		"matchID": Ti.App.MatchID
+			});
+			Get_friends();
     	}
     	
     	if (e.index === 1)
@@ -504,7 +493,7 @@ SubmitButton.addEventListener('click', function(e){
 		}
 		else
 		{
-			var dialog = Ti.UI.createAlertDialog({
+				var dialog = Ti.UI.createAlertDialog({
     			message: 'Your Prediction is : ' + GoalTeamA + " - " + GoalTeamB,
     			buttonNames: ['Confirm', 'Cancel'],
     			title: 'Confirm Your Score'
@@ -602,4 +591,3 @@ Ti.UI.currentWindow.add(drawButton);
 Ti.UI.currentWindow.add(winBButton);
 Ti.UI.currentWindow.add(teamAimage);
 Ti.UI.currentWindow.add(teamBimage);
-Ti.UI.currentWindow.add(Vsimage);

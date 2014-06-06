@@ -1,21 +1,55 @@
-	Ti.include('suds.js');
+Ti.include('suds.js');
+
+var tabGroup = Ti.UI.createTabGroup({
+	tabDividerColor : 'yellow'
+});
 
 var win1 = Titanium.UI.createWindow({  
     title:'Window 1',
-    backgroundColor:'#fff',
-    
+    backgroundImage: 'background.png',
+    barImage: 'topTitleBar.png' 
 });
 
 var win2 = Ti.UI.createWindow({
 	title: 'Match Center',
 	url: 'matchCentre.js',
-	backgroundColor: '#8ac60c'
+	backgroundImage: 'background.png',
+	barImage: 'topTitleBar.png' 
+});
+
+var favTeam = Ti.UI.createWindow({
+	title: 'Select Your Team',
+	 backgroundImage: 'background.png',
+	url: 'FavoriteTeam.js'
+});
+
+var leaderboard = Ti.UI.createWindow({
+	title: 'LeaderBoard',
+	 backgroundImage: 'background.png',
+	url: 'LeaderBoard.js',
+	barImage: 'topTitleBar.png' 
 });
 
 var NavGroup = Ti.UI.iOS.createNavigationWindow({
 	window: win2
 	});
 
+var appTab = Ti.UI.createTab({
+	title: 'Match Preditcion',
+	icon: 'KS_nav_views.png',
+	window: win2
+});
+
+var leaderboardTab = Ti.UI.createTab({
+	title: 'Leaderboard',
+	icon: 'KS_nav_ui.png',
+	window: leaderboard
+});
+tabGroup.addTab(appTab);
+tabGroup.addTab(leaderboardTab);
+
+Ti.App.TabGroup = tabGroup;
+Ti.App.Tab = appTab;
 
 var userId = Ti.UI.createLabel({
 	title:'No user Id',
@@ -45,6 +79,23 @@ var queryButton =  Ti.UI.createButton({
 
 win1.add(queryButton);
 
+var nextWinButton = Ti.UI.createButton({
+	title: 'NEXT',
+	top : '80%',
+    left: '20%',
+    width: '60%',
+});
+
+nextWinButton.addEventListener('click', function(e){
+	win1.close();
+	Ti.App.currentNavGroup = NavGroup;
+	//NavGroup.open();
+	tabGroup.open();
+});
+
+//favTeam.add(nextWinButton);
+
+
 var fb = require('facebook');
 fb.appid = 200188770129860;
 //fb.appid = 495338853813822;
@@ -62,10 +113,9 @@ fb.addEventListener('login', function(e)
     		var FbDetailObject = JSON.parse(JsonString);
     		userId.text = FbDetailObject.name + " " + fb.uid;
     		Ti.App.Fbid = fb.uid;
+    		Ti.App.Username = FbDetailObject.name;
         	Ti.API.log(e.result + " This is my Data");
-        	//win1.close();
-			//Ti.App.currentNavGroup = NavGroup;
-			//NavGroup.open();
+			favTeam.open();
    		} 
    		else if (e.error) 
    		{
@@ -99,49 +149,11 @@ if (!fb.loggedIn)
 		}	
 });
 
-var nextWinButton = Ti.UI.createButton({
-	title: 'NEXT',
-	top : '80%',
-    left: '20%',
-    width: '60%',
-});
 
-nextWinButton.addEventListener('click', function(e){
-	win1.close();
-	Ti.App.currentNavGroup = NavGroup;
-	NavGroup.open();
-});
 
 
 queryButton.addEventListener('click', function(e){
 
-/*	fb.requestWithGraphPath('me/friends',{}, 'GET', function(e)
-	{
-    	if (e.success) 
-    	{	
-    		var Jsona = e.result;
-    		var result = JSON.parse(Jsona);
-    		
-    		for (var c=0; c<result.length; c++)
-			{
-				var row = result[c];
-				Ti.API.log("for loop: " + c + " " + result[c]);
-			}
-    		Ti.API.log("Success!  From FB: " + result);
-    	} 
-    	else
-    	{
-        	if (e.error) 
-        	{
-            	alert(e.error);
-        	}
-        	else
-        	{
-            	alert("Unkown result");
-       		}
-    	}
-	}); */
-	
 		var query = "SELECT uid, name, pic_square, status FROM user ";
 		query +=  "where uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fb.uid + ")";
 		//query += "order by last_name limit 20";

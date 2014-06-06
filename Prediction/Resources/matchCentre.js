@@ -1,9 +1,11 @@
 Ti.include('suds.js');
 
-var win3 = Ti.UI.createWindow({
+var PredictionWindow = Ti.UI.createWindow({
 	title: 'Match Prediction',
 	url: 'Prediction.js',
-	backgroundColor: '#8ac60c'
+	backgroundImage: 'background.png',
+	barImage: 'topTitleBar.png',
+	
 });
 
 var NavButton = Ti.UI.createButton({
@@ -14,10 +16,10 @@ var NavButton = Ti.UI.createButton({
 var win2 = Ti.UI.currentWindow;
 
 NavButton.addEventListener('click', function(e){
-	win3.close();
-	Ti.App.currentNavGroup.openWindow(win2);
+	PredictionWindow.close();
+	Ti.App.Tab.open(win2);
 });
-win3.leftNavButton = NavButton;
+PredictionWindow.leftNavButton = NavButton;
 var message = "" ;
 var flags = "";
 var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
@@ -41,7 +43,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 	            	var MatchCount = 1;
 	            	for (var i = 0 ; i < team2.length; i = i + 2)
 	            	{
-	            		Ti.API.log("Match " + MatchCount + "  "+ team2.item(i).text + " " + team2.item(i + 1).text);
+	            	//	Ti.API.log("Match " + MatchCount + "  "+ team2.item(i).text + " " + team2.item(i + 1).text);
 	            		MatchCount = MatchCount + 1;
 	            		message = message + team2.item(i).text + "vs" + team2.item(i + 1).text + "%%";
 	            		var blank = " ";
@@ -50,7 +52,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 	            	}
 					
 					message = message.split(' ').join('-');
-					Ti.API.log(message);
+				//	Ti.API.log(message);
 					var matches = [];
 					var teamAimage = [];
 					var teamBimage = [];
@@ -58,7 +60,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 					var teamBlabel = [];
 
 					var matchesScrollView = Ti.UI.createScrollView({
-						backgroundColor: '#8ac60c'
+						backgroundColor: '#aa1a2d'
 					});
 					var match_list  = message.split('%%');
 
@@ -79,7 +81,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 							teamB: '',
 							Match: MatchID
 						});
-					Ti.API.log(MatchID);
+				//	Ti.API.log(MatchID);
 					var teams = match_list[i].split('vs');
 					matches[i].teamA = teams[0];
 					matches[i].teamB = teams[1];
@@ -127,17 +129,18 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
     					xhr.setRequestHeader('User-Agent','My User Agent');
     					xhr.onload = function()
      					{
-       						Ti.API.log("Fr response is : " + this.responseText);
+       				//		Ti.API.log("Fr response is : " + this.responseText);
        						if (this.responseText == null)
        						{
-       							Ti.App.currentNavGroup.openWindow(win3);
+       							Ti.App.Tab.open(PredictionWindow);
        						}
        						else
        						{
-       							Ti.API.log("I am here");
+       				//			Ti.API.log("I am here");
        							var AlreadyPredictedWindow = Ti.UI.createWindow({
        									title: 'Match Prediction',
-										backgroundColor: '#8ac60c'
+										backgroundImage: 'background.png',
+										barImage: 'topTitleBar.png',
        							});
        							var UserPrediction = this.responseText.split("%");
        							var label = Ti.UI.createLabel({
@@ -165,49 +168,107 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 								});
 								
 								if (UserPrediction[4] == "TBP")
-								{	Ti.API.log(UserPrediction[4].text);
+								{//	Ti.API.log(UserPrediction[4].text);
 									score_label.text = "This game is still to be played";
 									AlreadyPredictedWindow.add(score_label);
 									
 								}
 								else
-								{   Ti.API.log(UserPrediction[4]);
-									var Goals = UserPrediction[4].split("-");
+								{ 
+									Ti.API.log("Match Hogya hai");
+									//  Ti.API.log(UserPrediction[4]);
+ 									var Goals = UserPrediction[4].split("-");
+ 									//if correct prediction
 									if (UserPrediction[0] == Goals[0] && UserPrediction[1] == Goals[1] )
 									{	
-										if (UserPrediction[5] == "0")
+										if (UserPrediction[5] == -1)
 										{	
-											Ti.API.log("Inserting Score");
+											//Ti.API.log("Inserting Score");
 											var xhr_a = Ti.Network.createHTTPClient();
 											xhr_a.open('POST','http://codespikestudios.com/prediction/matchScore.php');
 											xhr_a.setRequestHeader('User-Agent','My User Agent');
 											xhr_a.onload = function()
 											{
 												Ti.API.log("Inserted " + this.responseText);
-												score_label.text = "You scored " + this.responseText  + "points";
-												AlreadyPredictedWindow.add(score_label);
+													score_label.text = "You scored  20 points";
+													AlreadyPredictedWindow.add(score_label);
 												
 											};
 																	     
 											xhr_a.send({
-														"UserID" : Ti.Fbid,
+														"UserID" : Ti.App.Fbid,
 														"GameID" : Ti.App.MatchID,
 														"Score": 20
 											});
 										}
 										else
-										{
-											Ti.API.log("jdbvjoba");
+										{	
+											score_label.text = "You scored " + UserPrediction[5]  + "points";
+											AlreadyPredictedWindow.add(score_label);
+										//	Ti.API.log("jdbvjoba");
+										}
+									}
+									//If not perfect prediction but correct team chosem
+									else if ((UserPrediction[0] > UserPrediction[1] && Goals[0] > Goals[1]) || (UserPrediction[0] < UserPrediction[1] && Goals[0] < Goals[1]) || (UserPrediction[0] == UserPrediction[1] && Goals[0] == Goals[1]) )
+									{
+										if (UserPrediction[5] == -1)
+										{	
+											
+											var xhr_a = Ti.Network.createHTTPClient();
+											xhr_a.open('POST','http://codespikestudios.com/prediction/matchScore.php');
+											xhr_a.setRequestHeader('User-Agent','My User Agent');
+											xhr_a.onload = function()
+											{
+												
+													score_label.text = "You scored  10 points";
+													AlreadyPredictedWindow.add(score_label);
+												
+											};
+																	     
+											xhr_a.send({
+														"UserID" : Ti.App.Fbid,
+														"GameID" : Ti.App.MatchID,
+														"Score": 10
+											});
+										}
+										else
+										{	
+											score_label.text = "You scored " + UserPrediction[5]  + "points";
+											AlreadyPredictedWindow.add(score_label);
 										}
 									}
 									else
 									{
-										Ti.API.log("Galat prediction");
-									}
+										if (UserPrediction[5] == -1)
+										{	
+											
+											var xhr_a = Ti.Network.createHTTPClient();
+											xhr_a.open('POST','http://codespikestudios.com/prediction/matchScore.php');
+											xhr_a.setRequestHeader('User-Agent','My User Agent');
+											xhr_a.onload = function()
+											{
+												
+													score_label.text = "You scored 0 points";
+													AlreadyPredictedWindow.add(score_label);
+												
+											};
+																	     
+											xhr_a.send({
+														"UserID" : Ti.App.Fbid,
+														"GameID" : Ti.App.MatchID,
+														"Score": 0
+											});
+										}
+										else
+										{	
+											score_label.text = "You scored "  + UserPrediction[5]  + " points";
+											AlreadyPredictedWindow.add(score_label);
+										}
+									} 
 								}
 								AlreadyPredictedWindow.add(teamAimage);
 								AlreadyPredictedWindow.add(teamBimage);
-       							Ti.App.currentNavGroup.openWindow(AlreadyPredictedWindow);
+       							Ti.App.Tab.open(AlreadyPredictedWindow);
        						}
 
      					};
@@ -224,7 +285,7 @@ var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 	         }
 			else
 	       	{
-	             Ti.API.log('Nai chala');	
+	        //     Ti.API.log('Nai chala');	
 	        }
 			});
 			}
@@ -316,7 +377,7 @@ for (var i = 0; i < match_list.length; i++)
 	matchesScrollView.add(matches[i]);
 		
 	matches[i].addEventListener('click', function(e){
-	Ti.App.currentNavGroup.openWindow(win3);
+	Ti.App.currentNavGroup.openWindow();
 	Ti.App.TeamAName = e.source.teamA;
 	Ti.App.TeamBName = e.source.teamB;
 	});
