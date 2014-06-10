@@ -10,6 +10,16 @@ var PickTeam = Ti.UI.createLabel({
 	center: {x:'50%' , y:'8%'}
 });
 
+var TeamRules = Ti.UI.createLabel({
+    text: '-Favorite team can be chosen only once' + '\n' + '-Bonus Points will be awarded everytime your team proceeds to the next round',
+    font: {
+		fontSize: '10%',
+		fontFamily : Ti.App.customFont
+	},
+	color: 'FFA302',
+	center: {x:'50%' , y:'75%'}
+});
+
 var TeamsScrollView = Ti.UI.createScrollView({
 	showHorizontalScrollIndicator: true,
 	top: '10%',
@@ -148,4 +158,5 @@ catch(e)
 	    Ti.API.error('Error: ' + e);
 	 } 
 Ti.UI.currentWindow.add(PickTeam);
+Ti.UI.currentWindow.add(TeamRules);
 Ti.UI.currentWindow.add(TeamsScrollView);

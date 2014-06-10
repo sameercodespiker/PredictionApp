@@ -101,7 +101,7 @@ var leaderboardTab = Ti.UI.createTab({
 
 var PredictionsTab = Ti.UI.createTab({
 	title: 'My Preditcions',
-	icon: 'KS_nav_views.png',
+	icon: 'myprediction.png',
 	window: UserPredictions
 });
 
