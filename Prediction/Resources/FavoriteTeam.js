@@ -1,8 +1,18 @@
 Ti.include('suds.js');
 
+var PickTeam = Ti.UI.createLabel({
+    text: 'PICK YOUR TEAM',
+    font: {
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+	},
+	color: 'FFA302',
+	center: {x:'50%' , y:'8%'}
+});
+
 var TeamsScrollView = Ti.UI.createScrollView({
 	showHorizontalScrollIndicator: true,
-	top: '0%',
+	top: '10%',
 	height: '60%'
 });
 var teamFlags = [];
@@ -23,28 +33,47 @@ try
 	        if (TeamName.length > 0)
 	        {
 	        	
-/*	          	var TopValue_b = (topValue/480)* 100;
+	      /*    var TopValue_b = (topValue/480)* 100;
 	          	var perTopVakue = TopValue_b.toString() + '%';
 	          	var percentage = (btnH/480)* 100;
 	          	var perBtnH = percentage.toString() + '%'; */
 	          	
 	          	var btnW = '200';
-	          	var btnWb ='220';
+
 	        	for (var i = 0; i < TeamName.length; i++)
 	        	{	
-	        		
+	        		var btnW = '200';
 	          		var widthValue = 40 + ( btnW * i);
+	          		
+	          		var btnWiPad = '300';
+	          		var widthValueiPad = 70 + ( btnWiPad * i);
 	          		var Name = TeamName.item(i).text.split(' ').join('-');
 	        		Ti.API.log( Name);
 	        		var teamAname = Name + "-Flag-256.png";
-	        		teamFlags[i] = Ti.UI.createImageView({
-	        			top: '20%',
-	        			image: teamAname,
-	        			left: widthValue ,
-	        			width: btnW,
-	        			height: '50%',
-	        			name: Name
-	        		});
+	        		
+	        		
+					if (Ti.Platform.osname == 'iphone' ) 
+					{	
+		        		teamFlags[i] = Ti.UI.createImageView({
+		        			top: '20%',
+		        			image: teamAname,
+		        			left: widthValue,
+		        			width: btnW ,
+		        			height: '50%',
+		        			name: Name
+	        			});
+	        		}	
+	        		if (Ti.Platform.osname == 'ipad' ) 
+					{	
+		        		teamFlags[i] = Ti.UI.createImageView({
+		        			top: '20%',
+		        			image: teamAname,
+		        			left: widthValueiPad,
+		        			width: btnWiPad ,
+		        			height: '50%',
+		        			name: Name
+	        			});
+	        		}		        		
 	        		teamFlags[i].addEventListener('click', function(e){
 	        			Ti.App.FavTeam = e.source.name;
 	        			//Ti.API.log(Ti.App.FavTeam);
@@ -76,15 +105,38 @@ try
     					});
  						dialog.show();
 	        		});
-	        		CountryName[i] = Ti.UI.createLabel({
-	        			text: Name,
-	        			color: 'white',
-	        			top: '70%',
-	        			height: '20%',
-	        		//	left: widthValue,
-	        			center: {x:teamFlags[i].left + btnW/2 , y: 150}
-	        		//	width: btnW,
-	        		});
+	        		if (Ti.Platform.osname == 'iphone' ) 
+					{	
+		        		CountryName[i] = Ti.UI.createLabel({
+		        			text: Name,
+		        			color: 'white',
+		        			top: '70%',
+		        			height: '20%',
+		        			font: {
+								fontSize: '20%',
+								fontFamily : Ti.App.customFont
+							},
+		        		//	left: widthValue,
+		        			center: {x:teamFlags[i].left + btnW/2 , y: 150}
+		        		//	width: btnW,
+	        			});
+	        	   }
+	        	   if (Ti.Platform.osname == 'ipad' ) 
+					{
+						CountryName[i] = Ti.UI.createLabel({
+		        			text: Name,
+		        			color: 'white',
+		        			top: '70%',
+		        			height: '20%',
+		        			font: {
+								fontSize: '20%',
+								fontFamily : Ti.App.customFont
+							},
+		        		//	left: widthValue,
+		        			center: {x:teamFlags[i].left + btnWiPad/2 , y: 150}
+		        		//	width: btnW,
+	        			});	
+					}
 	        		TeamsScrollView.add(CountryName[i]);
 	        		TeamsScrollView.add(teamFlags[i]);
 	        	}
@@ -95,5 +147,5 @@ catch(e)
 	 {
 	    Ti.API.error('Error: ' + e);
 	 } 
-
+Ti.UI.currentWindow.add(PickTeam);
 Ti.UI.currentWindow.add(TeamsScrollView);

@@ -12,7 +12,7 @@
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
     <guid>4abf8763-46b7-4697-b52d-983903a0f3c9</guid>
-    <property name="ti.facebook.appid">200188770129860</property>
+    <property name="ti.facebook.appid">162627337164258</property>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <ios>
         <plist>

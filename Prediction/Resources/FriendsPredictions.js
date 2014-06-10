@@ -35,7 +35,7 @@ b1.addEventListener('click', function() {
 Ti.UI.currentWindow.add(b1);
 
 var fb = require('facebook');
-fb.appid = 200188770129860;
+fb.appid = 704027519640918;
 fb.permissions = ['user_friends' , 'publish_stream', 'read_stream'];
 
 function runQuery() {

@@ -5,15 +5,15 @@ var DrawGoal = '';
 
 
 function Get_friends(){
-		var fb = require('facebook');
-		fb.appid = 200188770129860;
+	//	var fb = require('facebook');
+	//	fb.appid = 704027519640918;
 		//fb.appid = 495338853813822;
-		fb.permissions = ['user_friends' , 'publish_stream', 'read_stream'];
+	//	fb.permissions = ['user_friends' , 'publish_stream', 'read_stream'];
 		var query = "SELECT uid, name, pic_square, status FROM user ";
 		query +=  "where uid IN (SELECT uid2 FROM friend WHERE uid1 = " + Ti.App.Fbid + ")";
 		//query += "order by last_name limit 20";
-		Ti.API.info('user id ' + fb.uid);
-		fb.request('fql.query', {query: query},  function(r) {
+//		Ti.API.info('user id ' + fb.uid);
+		Ti.App.fbApp.request('fql.query', {query: query},  function(r) {
 			if (!r.success) {
 				if (r.error) {
 					alert(r.error);
@@ -43,13 +43,55 @@ function Get_friends(){
      				{	
      					RetrievedText = this.responseText;
      					Ti.API.log("Fr response is : " + this.responseText);
-     					var win = Ti.UI.createWindow({title:'Facebook Query'});
-     					var tableView = Ti.UI.createTableView({minRowHeight:100});
+     					var win = Ti.UI.createWindow({
+     				//		    title: 'Match Prediction',
+								backgroundImage: 'background.png',
+								barImage: 'topTitleBar.png',}
+     						);
+     					var tableView = Ti.UI.createTableView({
+     						minRowHeight: '20.83%',
+     						backgroundColor: '#aa1a2d'
+     						});
+     						
+     					var MyfriendsLabel = Ti.UI.createLabel({
+							text: 'FRIENDS PREDICTIONS',
+							color: '#aa1a2d',
+							font: {
+								fontSize: '20%',
+								fontFamily : Ti.App.customFont
+							}
+						});
+						
+						win.setTitleControl(MyfriendsLabel);
 						win.add(tableView);
 						var data = [];
      					if (RetrievedText == null)
      					{
-     						Ti.App.Tab.open(win);
+     						var NofriendPredictedWindow = Ti.UI.createWindow({
+     							title: 'Match Prediction',
+								backgroundImage: 'background.png',
+								barImage: 'topTitleBar.png',
+     						});
+     						var LabelNofriend = Ti.UI.createLabel({
+     							text: 'NONE OF YOUR FRIENDS HAS PREDICTED YET',
+     							font: {
+									fontSize: '25%',
+									fontFamily : Ti.App.customFont
+								},
+								color: 'FFA302',
+								center: {x:'50%' , y:'50%'}
+     						});
+     						NofriendPredictedWindow.add(LabelNofriend);
+     						var NavButton = Ti.UI.createButton({
+									title: '',
+									backgroundImage: 'backbutton.png'
+								});
+							NofriendPredictedWindow.leftNavButton = NavButton;
+							NavButton.addEventListener('click', function(e){
+								Ti.App.Tab.open(Ti.App.MatchCenter);
+							}); 
+							NofriendPredictedWindow.leftNavButton.hide();
+     						Ti.App.Tab.open(NofriendPredictedWindow);
      					}
      					else
      					{
@@ -68,8 +110,8 @@ function Get_friends(){
 										Ti.API.log(uid);
 										var tvRow = Ti.UI.createTableViewRow({
 											height:'auto',
-											selectedBackgroundColor:'#fff',
-											backgroundColor:'#fff'
+											selectedBackgroundColor:'#aa1a2d',
+											backgroundColor:'#aa1a2d'
 										});
 										var imageView;
 										imageView = Ti.UI.createImageView({
@@ -82,21 +124,25 @@ function Get_friends(){
 										tvRow.add(imageView);
 	
 										var userLabel = Ti.UI.createLabel({
-											font:{fontSize:16, fontWeight:'bold'},
-											left:70,
-											top:5,
-											right:5,
-											height:20,
+										    font: {
+											  fontSize: '15%',
+											  fontFamily : Ti.App.customFont
+											},
+											left: '30%',
+											top:'5%',
+											height:'10%',
 											color:'#576996',
 											text:row_b.name
 										});
 										tvRow.add(userLabel);
 	
 										var statusLabel = Ti.UI.createLabel({
-											font:{fontSize:13},
-											left:70,
-											top:25,
-											right:20,
+											 font: {
+											  fontSize: '15%',
+											  fontFamily : Ti.App.customFont
+											},
+											left:'30%',
+											bottom: '10%',
 											height:'auto',
 											color:'#222',
 											text: Getuid[0] + " - " + Getuid[1]
@@ -116,9 +162,9 @@ function Get_friends(){
 								});
 								win.leftNavButton = NavButton;
 								NavButton.addEventListener('click', function(e){
-									Ti.App.tab.open(win2);
+									Ti.App.Tab.open(Ti.App.MatchCenter);
 								}); 
-								
+								win.leftNavButton.hide();
 								Ti.App.Tab.open(win);
     
      					}
@@ -237,6 +283,18 @@ var teamAimage = Ti.UI.createImageView({
 	width: '30%',
 	image: teamAname
 });
+
+var teamAlabel = Ti.UI.createLabel({
+	text: Ti.App.TeamAName,
+	color: 'FFA302',
+	font: {
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+		},
+	top: '31%',
+	left: '5%',
+});
+
 var teamBimage = Ti.UI.createImageView({
 	top: '5%',
 	right: '5%',
@@ -244,6 +302,18 @@ var teamBimage = Ti.UI.createImageView({
 	width: '30%',
 	image: teamBname
 });  
+
+var teamBlabel = Ti.UI.createLabel({
+	text: Ti.App.TeamBName,
+	color: 'FFA302',
+	font: 
+	{
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+	},
+	top: '31%',
+	right: '5%',
+});
 
 var winButton = Ti.UI.createButton({
 	top: '45%',
@@ -424,14 +494,25 @@ GoalsSelectC.addEventListener('itemclick', function(e){
 
 
 SubmitButton = Ti.UI.createButton({
-	bottom: '10%',
-	title: ' SUBMIT ',
-	backgroundImage: 'boxx.png',
-	width: '60%'
+	bottom: '5%',
+	backgroundImage: 'button_confirm.png',
+	width: '40%',
+	height: '10%'
 });
 
 Ti.UI.currentWindow.add(SubmitButton);
 SubmitButton.hide();
+
+var PleaseWait = Ti.UI.createLabel({
+    text: 'PLEASE WAIT...',
+    font: {
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+	},
+	color: 'FFA302',
+	center: {x:'50%' , y:'50%'}
+});
+
 
 SubmitButton.addEventListener('click', function(e){
 	Ti.API.log("Checking Goals: " + parseInt(GoalTeamA) + " " + parseInt(GoalTeamB));
@@ -441,12 +522,14 @@ SubmitButton.addEventListener('click', function(e){
 		var dialog = Ti.UI.createAlertDialog({
     		message: 'Your Prediction is : ' + DrawGoal,
     		buttonNames: ['Confirm', 'Cancel'],
-    		title: 'Confirm Your Score'
+    		title: 'Confirm Your Score',
  	});
  		
 	dialog.addEventListener('click', function(e){
    		if (e.index === 0)
-    	{
+    	{	
+    		Ti.UI.currentWindow.removeAllChildren(); 
+    		Ti.UI.currentWindow.add(PleaseWait);
       		Ti.API.info('The confirm button was clicked');
     		var xhr = Ti.Network.createHTTPClient();
     		xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
@@ -454,7 +537,6 @@ SubmitButton.addEventListener('click', function(e){
     		xhr.onload = function()
      		{
       			Ti.API.log("Fr response is : " + this.responseText);
-
      		};
      
       		xhr.send({
@@ -500,7 +582,8 @@ SubmitButton.addEventListener('click', function(e){
  			});
  			dialog.addEventListener('click', function(e){
    				if (e.index === 0)
-    			{
+    			{	
+    				Ti.UI.currentWindow.removeAllChildren(); 
       				Ti.API.info('The confirm button was clicked');
     				var xhr = Ti.Network.createHTTPClient();
     				xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
@@ -555,7 +638,8 @@ SubmitButton.addEventListener('click', function(e){
  			});
  			dialog.addEventListener('click', function(e){
    			if (e.index === 0)
-    		{
+    		{	
+    			Ti.UI.currentWindow.removeAllChildren(); 
       			Ti.API.info('The confirm button was clicked');
     			var xhr = Ti.Network.createHTTPClient();
     			xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
@@ -591,3 +675,5 @@ Ti.UI.currentWindow.add(drawButton);
 Ti.UI.currentWindow.add(winBButton);
 Ti.UI.currentWindow.add(teamAimage);
 Ti.UI.currentWindow.add(teamBimage);
+Ti.UI.currentWindow.add(teamAlabel);
+Ti.UI.currentWindow.add(teamBlabel);

@@ -1,5 +1,9 @@
 Ti.include('suds.js');
 
+var customfont = 'Brasil14';
+Ti.App.customFont = customfont;
+
+Ti.App.ToggleFavTeam = false;
 var tabGroup = Ti.UI.createTabGroup({
 	tabDividerColor : 'yellow'
 });
@@ -10,32 +14,81 @@ var win1 = Titanium.UI.createWindow({
     barImage: 'topTitleBar.png' 
 });
 
+var titleLabel = Ti.UI.createLabel({
+	text: 'MATCH CENTER',
+	color: '#aa1a2d',
+	font: {
+		fontSize: '20%',
+		fontFamily : Ti.App.customFont
+	}
+	//center: {x:'50%' , y:'50%'}
+});
+
 var win2 = Ti.UI.createWindow({
-	title: 'Match Center',
+//	title: 'Match Center',
+	color: '#aa1a2d', 
 	url: 'matchCentre.js',
 	backgroundImage: 'background.png',
 	barImage: 'topTitleBar.png' 
 });
 
+win2.setTitleControl(titleLabel);
+Ti.App.MatchCenter = win2;
+
+
 var favTeam = Ti.UI.createWindow({
-	title: 'Select Your Team',
 	 backgroundImage: 'background.png',
-	url: 'FavoriteTeam.js'
+	 url: 'FavoriteTeam.js'
 });
+var favTeamLabel = Ti.UI.createLabel({
+	text: 'SELECT YOUR TEAM',
+	color: '#aa1a2d',
+	font: {
+		fontSize: '20%',
+		fontFamily : Ti.App.customFont
+	}
+});
+favTeam.setTitleControl(favTeamLabel);
+
 
 var leaderboard = Ti.UI.createWindow({
-	title: 'LeaderBoard',
-	 backgroundImage: 'background.png',
+	backgroundImage: 'background.png',
 	url: 'LeaderBoard.js',
 	barImage: 'topTitleBar.png' 
 });
 
-var NavGroup = Ti.UI.iOS.createNavigationWindow({
+var leaderBoardLabel = Ti.UI.createLabel({
+	text: 'LEADERBOARD',
+	color: '#aa1a2d',
+	font: {
+		fontSize: '20%',
+		fontFamily : Ti.App.customFont
+	}
+});
+leaderboard.setTitleControl(leaderBoardLabel);
+
+var UserPredictions = Ti.UI.createWindow({
+	 	backgroundImage: 'background.png',
+		url: 'myPredictions.js',
+		barImage: 'topTitleBar.png' 
+});
+
+var MyPredictionLabel = Ti.UI.createLabel({
+	text: 'MY PREDICTIONS',
+	color: '#aa1a2d',
+	font: {
+		fontSize: '20%',
+		fontFamily : Ti.App.customFont
+	}
+});
+
+UserPredictions.setTitleControl(MyPredictionLabel);
+/*var NavGroup = Ti.UI.iOS.createNavigationWindow({
 	window: win2
 	});
-
+*/
 var appTab = Ti.UI.createTab({
-	title: 'Match Preditcion',
+	title: 'Match Center',
 	icon: 'KS_nav_views.png',
 	window: win2
 });
@@ -45,8 +98,30 @@ var leaderboardTab = Ti.UI.createTab({
 	icon: 'KS_nav_ui.png',
 	window: leaderboard
 });
+
+var PredictionsTab = Ti.UI.createTab({
+	title: 'My Preditcions',
+	icon: 'KS_nav_views.png',
+	window: UserPredictions
+});
+
+
+
 tabGroup.addTab(appTab);
 tabGroup.addTab(leaderboardTab);
+tabGroup.addTab(PredictionsTab);
+
+
+
+tabGroup.addEventListener('focus', function(e){
+    if(e.index== 0) {
+        win2.fireEvent('GotFocus', e);
+    }    
+    
+    if(e.index== 2) {
+        UserPredictions.fireEvent('youGotFocus', e);
+    }
+});
 
 Ti.App.TabGroup = tabGroup;
 Ti.App.Tab = appTab;
@@ -70,16 +145,16 @@ var checkUseridButton = Ti.UI.createButton({
 	width: '60%'
 });
 
-var queryButton =  Ti.UI.createButton({
+/*var queryButton =  Ti.UI.createButton({
 		title:'Run Query',
 		width:200,
 		height:40,
 		top:10
 	});
 
-win1.add(queryButton);
+win1.add(queryButton); */
 
-var nextWinButton = Ti.UI.createButton({
+/*var nextWinButton = Ti.UI.createButton({
 	title: 'NEXT',
 	top : '80%',
     left: '20%',
@@ -91,15 +166,19 @@ nextWinButton.addEventListener('click', function(e){
 	Ti.App.currentNavGroup = NavGroup;
 	//NavGroup.open();
 	tabGroup.open();
-});
+}); */
 
 //favTeam.add(nextWinButton);
 
 
+
 var fb = require('facebook');
-fb.appid = 200188770129860;
-//fb.appid = 495338853813822;
-fb.permissions = ['user_friends' , 'publish_stream', 'read_stream'];
+//fb.appid = 200188770129860; //spinit
+fb.appid = 162627337164258; //slamcaps
+//fb.appid = 495338853813822; //kitchensink 
+//fb.appid = 704027519640918; //worldcup
+Ti.App.fbApp = fb;
+fb.permissions = ['user_friends' , 'publish_stream'];
 fb.addEventListener('login', function(e) 
 {
     if (e.success) 
@@ -115,7 +194,33 @@ fb.addEventListener('login', function(e)
     		Ti.App.Fbid = fb.uid;
     		Ti.App.Username = FbDetailObject.name;
         	Ti.API.log(e.result + " This is my Data");
-			favTeam.open();
+        	var xhr = Ti.Network.createHTTPClient();
+			xhr.open('POST','http://codespikestudios.com/prediction/UserExists.php');
+			xhr.setRequestHeader('User-Agent','My User Agent');
+			xhr.onload = function()
+			{
+				if (this.responseText == null)      				
+				{
+					favTeam.open();
+				}
+				else
+				{
+					Ti.App.TabGroup.open();
+				}
+				
+			};
+				     
+				xhr.send({
+		//		    "Score": 0,
+		//		    "FbID":Ti.App.Fbid,
+		//		    "Favteam": Ti.App.FavTeam,
+		//		    "Username": Ti.App.Username
+					"UserID": Ti.App.Fbid
+						}); 
+    							
+    		}
+    					});
+			
    		} 
    		else if (e.error) 
    		{
@@ -126,17 +231,16 @@ fb.addEventListener('login', function(e)
         	alert('Unknown response');
     	}
 });
-    }
-});
- fb.authorize(); 
+   
+
+fb.authorize(); 
 fb.addEventListener('logout', function(e) {
     	//alert('Logged out');
 });
 
 // Add the button.  Note that it doesn't need a click event listener.
 win1.add(fb.createLoginButton({
-    top : '60%',
-    left: '20%',
+	center: {x:'50%' , y:'50%'},
     width: '60%',
     style : fb.BUTTON_STYLE_WIDE
 }));
@@ -152,7 +256,7 @@ if (!fb.loggedIn)
 
 
 
-queryButton.addEventListener('click', function(e){
+/*queryButton.addEventListener('click', function(e){
 
 		var query = "SELECT uid, name, pic_square, status FROM user ";
 		query +=  "where uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fb.uid + ")";
@@ -268,9 +372,8 @@ queryButton.addEventListener('click', function(e){
 			}
 			
 		}); 
-});
+}); */
 
-win1.add(checkUseridButton);
-win1.add(userId);
-win1.add(nextWinButton);
+//win1.add(checkUseridButton);
+//win1.add(userId);
 win1.open();
