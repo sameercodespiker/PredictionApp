@@ -584,6 +584,7 @@ SubmitButton.addEventListener('click', function(e){
    				if (e.index === 0)
     			{	
     				Ti.UI.currentWindow.removeAllChildren(); 
+    				Ti.UI.currentWindow.add(PleaseWait);
       				Ti.API.info('The confirm button was clicked');
     				var xhr = Ti.Network.createHTTPClient();
     				xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
@@ -640,6 +641,7 @@ SubmitButton.addEventListener('click', function(e){
    			if (e.index === 0)
     		{	
     			Ti.UI.currentWindow.removeAllChildren(); 
+    			Ti.UI.currentWindow.add(PleaseWait);
       			Ti.API.info('The confirm button was clicked');
     			var xhr = Ti.Network.createHTTPClient();
     			xhr.open('POST','http://codespikestudios.com/prediction/Test.php');

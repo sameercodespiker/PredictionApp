@@ -187,7 +187,17 @@ fb.addEventListener('login', function(e)
         Ti.API.log(fb.uid);
         fb.requestWithGraphPath('me', {}, 'GET', function(e) {
     	if (e.success) 
-    	{	
+    	{		       							
+    		var labelWait = Ti.UI.createLabel({
+	       		Text: 'Please Wait...', 
+	       		font: {
+						fontSize: '25%',
+						fontFamily : Ti.App.customFont
+				},
+				color: 'FFA302',
+				center: {x:'50%' , y:'30%'}
+	       		});
+	       	win1.add(labelWait);
     		var JsonString = e.result;
     		var FbDetailObject = JSON.parse(JsonString);
     		userId.text = FbDetailObject.name + " " + fb.uid;

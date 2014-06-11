@@ -114,7 +114,7 @@ win2.addEventListener('GotFocus', function(e){
 		          			var perTopValue = TopValue_b.toString() + '%';
 		          			var percentage = (btnH/480)* 100;
 		          			var perBtnH = percentage.toString() + '%';
-							matches[i]= Ti.UI.createButton({
+							matches[i]= Ti.UI.createView({
 								top: perTopValue,
 								height: perBtnH,
 								left: '1%',
@@ -126,6 +126,15 @@ win2.addEventListener('GotFocus', function(e){
 							});
 					//	Ti.API.log(MatchID);
 						var teams = match_list[i].split('vs');
+
+						if (teams[1] == "Bosnia-&-Herzegovina")
+						{
+							teams[1] = "Bosnia";
+						}
+						if (teams[0] == "Bosnia-&-Herzegovina")
+						{
+							teams[0] = "Bosnia";
+						}
 						matches[i].teamA = teams[0];
 						matches[i].teamB = teams[1];
 						teamAlabel[i] = Ti.UI.createLabel({
@@ -177,6 +186,8 @@ win2.addEventListener('GotFocus', function(e){
 							Ti.App.TeamAName = e.source.teamA;
 							Ti.App.TeamBName = e.source.teamB;
 							Ti.App.MatchID = e.source.Match;
+							
+							Ti.API.log("Joji : " + e.source.Match);
 							var xhr = Ti.Network.createHTTPClient();
 	   						xhr.open('POST','http://codespikestudios.com/prediction/UserCheck.php');
 	    					xhr.setRequestHeader('User-Agent','My User Agent');

@@ -13,11 +13,11 @@ var PickTeam = Ti.UI.createLabel({
 var TeamRules = Ti.UI.createLabel({
     text: '-Favorite team can be chosen only once' + '\n' + '-Bonus Points will be awarded everytime your team proceeds to the next round',
     font: {
-		fontSize: '10%',
+		fontSize: '11%',
 		fontFamily : Ti.App.customFont
 	},
 	color: 'FFA302',
-	center: {x:'50%' , y:'75%'}
+	center: {x:'50%' , y:'15%'}
 });
 
 var TeamsScrollView = Ti.UI.createScrollView({
@@ -58,6 +58,10 @@ try
 	          		var btnWiPad = '300';
 	          		var widthValueiPad = 70 + ( btnWiPad * i);
 	          		var Name = TeamName.item(i).text.split(' ').join('-');
+	          		if (Name == "Bosnia-&-Herzegovina")
+						{
+							Name = "Bosnia";
+						}
 	        		Ti.API.log( Name);
 	        		var teamAname = Name + "-Flag-256.png";
 	        		
@@ -95,6 +99,7 @@ try
  						dialog.addEventListener('click', function(e){
    							if (e.index === 0)
     						{	
+    							Ti.UI.currentWindow.removeAllChildren();
     							var xhr = Ti.Network.createHTTPClient();
 				    			xhr.open('POST','http://codespikestudios.com/prediction/InsertUser.php');
 				    			xhr.setRequestHeader('User-Agent','My User Agent');
