@@ -509,7 +509,7 @@ var PleaseWait = Ti.UI.createLabel({
 		fontSize: '25%',
 		fontFamily : Ti.App.customFont
 	},
-	color: 'FFA302',
+	color: 'yellow',
 	center: {x:'50%' , y:'50%'}
 });
 

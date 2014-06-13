@@ -6,7 +6,7 @@ var PickTeam = Ti.UI.createLabel({
 		fontSize: '25%',
 		fontFamily : Ti.App.customFont
 	},
-	color: 'FFA302',
+	color: 'yellow',
 	center: {x:'50%' , y:'8%'}
 });
 
@@ -16,18 +16,19 @@ var TeamRules = Ti.UI.createLabel({
 		fontSize: '11%',
 		fontFamily : Ti.App.customFont
 	},
-	color: 'FFA302',
+	color: 'yellow',
 	center: {x:'50%' , y:'15%'}
 });
 
 var TeamsScrollView = Ti.UI.createScrollView({
 	showHorizontalScrollIndicator: true,
 	top: '10%',
-	height: '60%'
+	height: '60%',
+	scrollType: 'horizontal'
 });
 var teamFlags = [];
 var CountryName =[];
-var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
+/*var url_abc = "http://footballpool.dataaccess.eu/data/info.wso";
 var callparams_abc = {
 
 	};
@@ -49,15 +50,18 @@ try
 	          	var perBtnH = percentage.toString() + '%'; */
 	          	
 	          	var btnW = '200';
-
+				var teamNamesString = "Algeria%Argentina%Australia%Belgium%Bosnia%Brazil%Cameroon%Chile%Columbia%Costa-Rica%Croatia%Ecuador%England%France%Germany%Ghana%Greece%Honduras%Iran%Italy%Ivory-Coast%Japan%Mexico%Netherlands%Nigeria%Portugal%Russia%South-Korea%Spain%Switzerland%United-States%Uruguay";
+				var TeamName = teamNamesString.split("%");
 	        	for (var i = 0; i < TeamName.length; i++)
 	        	{	
 	        		var btnW = '200';
 	          		var widthValue = 40 + ( btnW * i);
-	          		
+	       //   		Ti.API.log(TeamName.item(i).text + "%");
 	          		var btnWiPad = '300';
 	          		var widthValueiPad = 70 + ( btnWiPad * i);
-	          		var Name = TeamName.item(i).text.split(' ').join('-');
+	          		
+	          	//	var Name = TeamName.item(i).text.split(' ').join('-');
+	          		var Name =  TeamName[i];
 	          		if (Name == "Bosnia-&-Herzegovina")
 						{
 							Name = "Bosnia";
@@ -66,7 +70,7 @@ try
 	        		var teamAname = Name + "-Flag-256.png";
 	        		
 	        		
-					if (Ti.Platform.osname == 'iphone' ) 
+					if (Ti.Platform.osname == 'iphone' || Ti.Platform.osname == 'android' ) 
 					{	
 		        		teamFlags[i] = Ti.UI.createImageView({
 		        			top: '20%',
@@ -120,7 +124,7 @@ try
     					});
  						dialog.show();
 	        		});
-	        		if (Ti.Platform.osname == 'iphone' ) 
+	        		if (Ti.Platform.osname == 'iphone' || Ti.Platform.osname == 'android' ) 
 					{	
 		        		CountryName[i] = Ti.UI.createLabel({
 		        			text: Name,
@@ -155,13 +159,13 @@ try
 	        		TeamsScrollView.add(CountryName[i]);
 	        		TeamsScrollView.add(teamFlags[i]);
 	        	}
-	        }
-	     });
-	}
+	/*        }
+//	     });
+//	}
 catch(e) 
 	 {
 	    Ti.API.error('Error: ' + e);
-	 } 
+	 } */
 Ti.UI.currentWindow.add(PickTeam);
 Ti.UI.currentWindow.add(TeamRules);
 Ti.UI.currentWindow.add(TeamsScrollView);

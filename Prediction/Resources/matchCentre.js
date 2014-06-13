@@ -21,8 +21,14 @@ win2.addEventListener('GotFocus', function(e){
 		}
 		//center: {x:'50%' , y:'50%'}
 	});
+	if (Ti.Platform.osname === 'android')
+    {
 	
+    }
+    else
+    {
 	PredictionWindow.setTitleControl(titleLabel);
+	}
 	
 	var NavButton = Ti.UI.createButton({
 		title: '',
@@ -208,18 +214,28 @@ win2.addEventListener('GotFocus', function(e){
 	       							
 	       							AlreadyPredictedWindow.leftNavButton = NavButton;
 	       							NavButton.hide();
-	       							AlreadyPredictedWindow.setTitleControl(titleLabel);
+	       							if (Ti.Platform.osname === 'android')
+									{
+	
+									}
+									else
+									{
+									AlreadyPredictedWindow.setTitleControl(titleLabel);
+									}
+
+	       							
 	       							
 	       							var UserPrediction = this.responseText.split("%");
-	       							var label = Ti.UI.createLabel({
-	       								Text: 'YOU PREDICTED ' + '\n' + '\t' + '\t' + UserPrediction[0] + '-' +  UserPrediction[1], 
+	       							var labelYouPredicted= Ti.UI.createLabel({
+	       								text: 'YOU PREDICTED ' + '\n' + '\t' + '\t' + UserPrediction[0] + '-' +  UserPrediction[1], 
 	       								font: {
 											fontSize: '25%',
 											fontFamily : Ti.App.customFont
 										},
-										color: 'FFA302'
+										color: 'yellow'
 	       							});
-	       							AlreadyPredictedWindow.add(label);
+	       							Ti.API.log("JOJI : *** " + labelYouPredicted.text );
+	       							AlreadyPredictedWindow.add(labelYouPredicted);
 	       							
 	       						    var teamAname_A = e.source.teamA + "-Flag-256.png";
 									var teamBname_B = e.source.teamB + "-Flag-256.png";	
@@ -232,7 +248,7 @@ win2.addEventListener('GotFocus', function(e){
 									});
 									var teamAlabel = Ti.UI.createLabel({
 										text: e.source.teamA,
-										color: 'FFA302',
+										color: 'yellow',
 										font: {
 											fontSize: '25%',
 											fontFamily : Ti.App.customFont
@@ -249,7 +265,7 @@ win2.addEventListener('GotFocus', function(e){
 									}); 
 									var teamBlabel = Ti.UI.createLabel({
 										text: e.source.teamB,
-										color: 'FFA302',
+										color: 'yellow',
 										font: {
 											fontSize: '25%',
 											fontFamily : Ti.App.customFont
@@ -263,7 +279,7 @@ win2.addEventListener('GotFocus', function(e){
 											fontSize: '25%',
 											fontFamily : Ti.App.customFont
 										},
-										color: 'FFA302'									
+										color: 'yellow'									
 									});
 									
 									if (UserPrediction[4] == "TBP")

@@ -72,7 +72,7 @@ win.addEventListener('youGotFocus', function(e){
 				teamA[i] = Ti.UI.createLabel({
 					text: details[4],
 					top: '10%',
-					color: 'FFA302',
+					color: 'yellow',
 					left: '5%',
 					font: {
 						fontSize: '20%',
@@ -82,7 +82,7 @@ win.addEventListener('youGotFocus', function(e){
 				teamB[i] = Ti.UI.createLabel({
 					text: details[5],
 					top: '10%',
-					color: 'FFA302',
+					color: 'yellow',
 					right: '5%',
 					font: {
 						fontSize: '20%',
@@ -98,7 +98,7 @@ win.addEventListener('youGotFocus', function(e){
 						fontSize: '10%',
 						fontFamily : Ti.App.customFont
 					},
-					color: 'FFA302'
+					color: 'yellow'
 				});
 					tvRow[i].add(final_score[i]);
 				}
@@ -111,7 +111,7 @@ win.addEventListener('youGotFocus', function(e){
 							fontSize: '10%',
 							fontFamily : Ti.App.customFont
 						},
-						color: 'FFA302'
+						color: 'yellow'
 					});
 					tvRow[i].add(final_score[i]);
 				}
@@ -139,7 +139,7 @@ win.addEventListener('youGotFocus', function(e){
 						fontSize: '25%',
 						fontFamily : Ti.App.customFont
 					},
-					color: 'FFA302'
+					color: 'yellow'
 				});
 			
 	     tvRow[i].add(teamA[i]);

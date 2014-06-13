@@ -66,7 +66,7 @@ overall_leaderboard.addEventListener('click' , function(e){
 				right: '15%',
 				top: '20%',
 				text: user[1],
-				color: 'FFA302',
+				color: 'yellow',
 				font: {
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont
@@ -75,7 +75,7 @@ overall_leaderboard.addEventListener('click' , function(e){
 			usernamelabel[i]= Ti.UI.createLabel({
 				left: '5%',
 				top: '20%',
-				color: 'FFA302',
+				color: 'yellow',
 				font: {
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont
@@ -132,7 +132,7 @@ weekly_leaderboard.addEventListener('click', function(e){
 				right: '15%',
 				top: '20%',
 				text: user[1],
-				color: 'FFA302',
+				color: 'yellow',
 				font: {
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont
@@ -141,7 +141,7 @@ weekly_leaderboard.addEventListener('click', function(e){
 			usernamelabel[i]= Ti.UI.createLabel({
 				left: '5%',
 				top: '20%',
-				color: 'FFA302',
+				color: 'yellow',
 				font: {
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont

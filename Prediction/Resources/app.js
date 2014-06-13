@@ -1,7 +1,13 @@
 Ti.include('suds.js');
 
 var customfont = 'Brasil14';
+if(Ti.Platform.osname=='android') {
+   // on Android, use the "base name" of the file (name without extension)
+   customFont = 'Brasil 14';
+} 
 Ti.App.customFont = customfont;
+
+
 
 Ti.App.ToggleFavTeam = false;
 var tabGroup = Ti.UI.createTabGroup({
@@ -9,7 +15,7 @@ var tabGroup = Ti.UI.createTabGroup({
 });
 
 var win1 = Titanium.UI.createWindow({  
-    title:'Window 1',
+	
     backgroundImage: 'background.png',
     barImage: 'topTitleBar.png' 
 });
@@ -32,7 +38,14 @@ var win2 = Ti.UI.createWindow({
 	barImage: 'topTitleBar.png' 
 });
 
-win2.setTitleControl(titleLabel);
+if (Ti.Platform.osname === 'android')
+{
+	
+}
+else
+{
+	win2.setTitleControl(titleLabel);
+}
 Ti.App.MatchCenter = win2;
 
 
@@ -48,7 +61,15 @@ var favTeamLabel = Ti.UI.createLabel({
 		fontFamily : Ti.App.customFont
 	}
 });
-favTeam.setTitleControl(favTeamLabel);
+if (Ti.Platform.osname === 'android')
+{
+	
+}
+else
+{
+	favTeam.setTitleControl(favTeamLabel);
+}
+
 
 
 var leaderboard = Ti.UI.createWindow({
@@ -65,7 +86,15 @@ var leaderBoardLabel = Ti.UI.createLabel({
 		fontFamily : Ti.App.customFont
 	}
 });
-leaderboard.setTitleControl(leaderBoardLabel);
+if (Ti.Platform.osname === 'android')
+{
+	
+}
+else
+{
+	leaderboard.setTitleControl(leaderBoardLabel);
+}
+
 
 var UserPredictions = Ti.UI.createWindow({
 	 	backgroundImage: 'background.png',
@@ -81,8 +110,15 @@ var MyPredictionLabel = Ti.UI.createLabel({
 		fontFamily : Ti.App.customFont
 	}
 });
+if (Ti.Platform.osname === 'android')
+{
+	
+}
+else
+{
+	UserPredictions.setTitleControl(MyPredictionLabel);
+}
 
-UserPredictions.setTitleControl(MyPredictionLabel);
 /*var NavGroup = Ti.UI.iOS.createNavigationWindow({
 	window: win2
 	});
@@ -100,7 +136,7 @@ var leaderboardTab = Ti.UI.createTab({
 });
 
 var PredictionsTab = Ti.UI.createTab({
-	title: 'My Preditcions',
+	title: 'My Predictions',
 	icon: 'myprediction.png',
 	window: UserPredictions
 });
@@ -171,7 +207,7 @@ nextWinButton.addEventListener('click', function(e){
 //favTeam.add(nextWinButton);
 
 
-
+win1.addEventListener('open' , function(e){
 var fb = require('facebook');
 //fb.appid = 200188770129860; //spinit
 fb.appid = 162627337164258; //slamcaps
@@ -179,6 +215,54 @@ fb.appid = 162627337164258; //slamcaps
 //fb.appid = 704027519640918; //worldcup
 Ti.App.fbApp = fb;
 fb.permissions = ['user_friends' , 'publish_stream'];
+if (fb.loggedIn)
+{
+fb.requestWithGraphPath('me', {}, 'GET', function(e) {
+    	if (e.success) 
+    	{		       							
+    		var labelWait = Ti.UI.createLabel({
+	       		text: 'Please Wait...', 
+	       		font: {
+						fontSize: '25%',
+						fontFamily : Ti.App.customFont
+				},
+				color: 'yellow',
+				center: {x:'50%' , y:'30%'}
+	       		});
+	       	win1.add(labelWait);
+    		var JsonString = e.result;
+    		var FbDetailObject = JSON.parse(JsonString);
+    		userId.text = FbDetailObject.name + " " + fb.uid;
+    		Ti.App.Fbid = fb.uid;
+    		Ti.App.Username = FbDetailObject.name;
+        	Ti.API.log(e.result + " This is my Data");
+        	var xhr = Ti.Network.createHTTPClient();
+			xhr.open('POST','http://codespikestudios.com/prediction/UserExists.php');
+			xhr.setRequestHeader('User-Agent','My User Agent');
+			xhr.onload = function()
+			{
+				if (this.responseText == null)      				
+				{
+					favTeam.open();
+				}
+				else
+				{
+					Ti.App.TabGroup.open();
+				}
+				
+			};
+				     
+				xhr.send({
+		//		    "Score": 0,
+		//		    "FbID":Ti.App.Fbid,
+		//		    "Favteam": Ti.App.FavTeam,
+		//		    "Username": Ti.App.Username
+					"UserID": Ti.App.Fbid
+						}); 
+    							
+    		}
+});
+}
 fb.addEventListener('login', function(e) 
 {
     if (e.success) 
@@ -189,12 +273,12 @@ fb.addEventListener('login', function(e)
     	if (e.success) 
     	{		       							
     		var labelWait = Ti.UI.createLabel({
-	       		Text: 'Please Wait...', 
+	       		text: 'Please Wait...', 
 	       		font: {
 						fontSize: '25%',
 						fontFamily : Ti.App.customFont
 				},
-				color: 'FFA302',
+				color: 'yellow',
 				center: {x:'50%' , y:'30%'}
 	       		});
 	       	win1.add(labelWait);
@@ -238,17 +322,18 @@ fb.addEventListener('login', function(e)
     	} 
    	    else 
    	    {
-        	alert('Unknown response');
+        	alert('You need to Login from Facebook account to continue');
     	}
 });
    
 
 fb.authorize(); 
+
 fb.addEventListener('logout', function(e) {
     	//alert('Logged out');
 });
 
-// Add the button.  Note that it doesn't need a click event listener.
+
 win1.add(fb.createLoginButton({
 	center: {x:'50%' , y:'50%'},
     width: '60%',
@@ -262,6 +347,11 @@ if (!fb.loggedIn)
 			return;
 		}	
 });
+});
+
+
+// Add the button.  Note that it doesn't need a click event listener.
+
 
 
 
