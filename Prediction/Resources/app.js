@@ -35,7 +35,7 @@ var win2 = Ti.UI.createWindow({
 	color: '#aa1a2d', 
 	url: 'matchCentre.js',
 	backgroundImage: 'background.png',
-	barImage: 'topTitleBar.png' 
+	barImage: 'topTitleBar.png' ,
 });
 
 if (Ti.Platform.osname === 'android')
@@ -102,6 +102,7 @@ var UserPredictions = Ti.UI.createWindow({
 		barImage: 'topTitleBar.png' 
 });
 
+
 var MyPredictionLabel = Ti.UI.createLabel({
 	text: 'MY PREDICTIONS',
 	color: '#aa1a2d',
@@ -148,6 +149,24 @@ tabGroup.addTab(leaderboardTab);
 tabGroup.addTab(PredictionsTab);
 
 
+tabGroup.addEventListener('android:back',function() 
+{	
+	var dialog = Ti.UI.createAlertDialog({
+    		message: 'Confirm Exit',
+    		buttonNames: ['Ok', 'Cancel'],
+    		title: 'Are you sure?',
+ });
+ 
+
+	dialog.addEventListener('click', function(e){
+   		if (e.index === 0)
+    	{
+			var activity = Titanium.Android.currentActivity;
+			activity.finish();
+		}
+	});
+	dialog.show();
+});
 
 tabGroup.addEventListener('focus', function(e){
     if(e.index== 0) {
@@ -235,7 +254,7 @@ fb.requestWithGraphPath('me', {}, 'GET', function(e) {
     		userId.text = FbDetailObject.name + " " + fb.uid;
     		Ti.App.Fbid = fb.uid;
     		Ti.App.Username = FbDetailObject.name;
-        	Ti.API.log(e.result + " This is my Data");
+  //      	Ti.API.log(e.result + " This is my Data");
         	var xhr = Ti.Network.createHTTPClient();
 			xhr.open('POST','http://codespikestudios.com/prediction/UserExists.php');
 			xhr.setRequestHeader('User-Agent','My User Agent');
@@ -268,7 +287,7 @@ fb.addEventListener('login', function(e)
     if (e.success) 
     {
         //userId.text = " User Id = " + fb.uid + " User Name: " + JSON.stringify(fb.data);
-        Ti.API.log(fb.uid);
+  //      Ti.API.log(fb.uid);
         fb.requestWithGraphPath('me', {}, 'GET', function(e) {
     	if (e.success) 
     	{		       							
@@ -287,7 +306,7 @@ fb.addEventListener('login', function(e)
     		userId.text = FbDetailObject.name + " " + fb.uid;
     		Ti.App.Fbid = fb.uid;
     		Ti.App.Username = FbDetailObject.name;
-        	Ti.API.log(e.result + " This is my Data");
+     //   	Ti.API.log(e.result + " This is my Data");
         	var xhr = Ti.Network.createHTTPClient();
 			xhr.open('POST','http://codespikestudios.com/prediction/UserExists.php');
 			xhr.setRequestHeader('User-Agent','My User Agent');
@@ -476,4 +495,8 @@ if (!fb.loggedIn)
 
 //win1.add(checkUseridButton);
 //win1.add(userId);
+// make sure Android doesn't close on the back button
+
+
+
 win1.open();

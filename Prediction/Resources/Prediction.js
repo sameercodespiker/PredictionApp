@@ -30,7 +30,7 @@ function Get_friends(){
 				for (var c = 0; c < result.length ; c++)
 				{
 					var row = result[c];
-					Ti.API.log(c + " " + row.uid);
+				//	Ti.API.log(c + " " + row.uid);
 					message = message + row.uid + "%%";
 					
 					
@@ -42,7 +42,7 @@ function Get_friends(){
     				xhr.onload = function()
      				{	
      					RetrievedText = this.responseText;
-     					Ti.API.log("Fr response is : " + this.responseText);
+     			//		Ti.API.log("Fr response is : " + this.responseText);
      					var win = Ti.UI.createWindow({
      				//		    title: 'Match Prediction',
 								backgroundImage: 'background.png',
@@ -61,8 +61,15 @@ function Get_friends(){
 								fontFamily : Ti.App.customFont
 							}
 						});
+						if (Ti.Platform.osname === 'android')
+						{
+	
+						}
+						else
+						{
+							win.setTitleControl(MyfriendsLabel);
+						}
 						
-						win.setTitleControl(MyfriendsLabel);
 						win.add(tableView);
 						var data = [];
      					if (RetrievedText == null)
@@ -78,7 +85,7 @@ function Get_friends(){
 									fontSize: '25%',
 									fontFamily : Ti.App.customFont
 								},
-								color: 'FFA302',
+								color: 'yellow',
 								center: {x:'50%' , y:'50%'}
      						});
      						NofriendPredictedWindow.add(LabelNofriend);
@@ -107,10 +114,10 @@ function Get_friends(){
 									var row_b = result[c];
 									if (row_b.uid == uid)
 									{
-										Ti.API.log(uid);
+										//Ti.API.log(uid);
 										var tvRow = Ti.UI.createTableViewRow({
 											height:'auto',
-											selectedBackgroundColor:'#aa1a2d',
+		//									selectedBackgroundColor:'#aa1a2d',
 											backgroundColor:'#aa1a2d'
 										});
 										var imageView;
@@ -131,7 +138,7 @@ function Get_friends(){
 											left: '30%',
 											top:'5%',
 											height:'10%',
-											color:'#576996',
+											color:'black',
 											text:row_b.name
 										});
 										tvRow.add(userLabel);
@@ -286,7 +293,7 @@ var teamAimage = Ti.UI.createImageView({
 
 var teamAlabel = Ti.UI.createLabel({
 	text: Ti.App.TeamAName,
-	color: 'FFA302',
+	color: 'yellow',
 	font: {
 		fontSize: '25%',
 		fontFamily : Ti.App.customFont
@@ -305,7 +312,7 @@ var teamBimage = Ti.UI.createImageView({
 
 var teamBlabel = Ti.UI.createLabel({
 	text: Ti.App.TeamBName,
-	color: 'FFA302',
+	color: 'yellow',
 	font: 
 	{
 		fontSize: '25%',
@@ -315,7 +322,7 @@ var teamBlabel = Ti.UI.createLabel({
 	right: '5%',
 });
 
-var winButton = Ti.UI.createButton({
+/*var winButton = Ti.UI.createButton({
 	top: '45%',
 	left: '2.5%',
 	height: '10%',
@@ -492,16 +499,151 @@ GoalsSelectC.addEventListener('itemclick', function(e){
 	SubmitButton.show();
 });
 
+*/
 
-SubmitButton = Ti.UI.createButton({
+var GoalteamAshowing = 0;
+var GoalteamBshowing = 0;
+var labelGoalA = Ti.UI.createLabel({
+	    text: String(GoalteamAshowing),
+    font: {
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+	},
+	color: 'yellow',
+	center: {x:'20%' , y:'42%'}
+});
+
+var incrementA = Ti.UI.createButton({
+	center: {x:'30%' , y:'40%'},
+	backgroundImage: 'arrowup.png',
+	height: '6%',
+	width: '9%'
+
+});
+
+incrementA.addEventListener('click', function(e){
+	GoalteamAshowing = GoalteamAshowing + 1;
+	labelGoalA.text = String(GoalteamAshowing);
+});
+
+var decrementA = Ti.UI.createButton({
+	center: {x:'30%' , y:'48%'},
+	backgroundImage: 'arrowdown.png',
+	height: '6%',
+	width: '9%'
+
+});
+
+decrementA.addEventListener('click', function(e){
+	if (GoalteamAshowing == 0)
+	{
+		
+	}	
+	else
+	{
+	GoalteamAshowing = GoalteamAshowing - 1;
+	labelGoalA.text = String(GoalteamAshowing);
+	}
+});
+
+var labelGoalB = Ti.UI.createLabel({
+	text: String(GoalteamBshowing),
+    font: {
+		fontSize: '25%',
+		fontFamily : Ti.App.customFont
+	},
+	color: 'yellow',
+	center: {x:'70%' , y:'42%'}
+});
+
+var incrementB = Ti.UI.createButton({
+	center: {x:'60%' , y:'40%'},
+	backgroundImage: 'arrowup.png',
+	height: '6%',
+	width: '9%'
+
+});
+
+incrementB.addEventListener('click', function(e){
+	GoalteamBshowing = GoalteamBshowing + 1;
+	labelGoalB.text = String(GoalteamBshowing);
+});
+
+var decrementB = Ti.UI.createButton({
+	center: {x:'60%' , y:'48%'},
+	backgroundImage: 'arrowdown.png',
+	height: '6%',
+	width: '9%'
+});
+
+decrementB.addEventListener('click', function(e){
+	if (GoalteamBshowing == 0)
+	{
+		
+	}
+	else{
+	GoalteamBshowing = GoalteamBshowing - 1;
+	labelGoalB.text = String(GoalteamBshowing);
+	}
+});
+
+
+var SubmitButton = Ti.UI.createButton({
 	bottom: '5%',
 	backgroundImage: 'button_confirm.png',
 	width: '40%',
 	height: '10%'
 });
 
+SubmitButton.addEventListener('click', function(e){
+	//Ti.API.log("Checking Goals: " + GoalteamAshowing + " " + GoalteamBshowing);
+	var dialog = Ti.UI.createAlertDialog({
+    		message: 'Your Prediction is : ' + GoalteamAshowing + ' - ' + GoalteamBshowing,
+    		buttonNames: ['Confirm', 'Cancel'],
+    		title: 'Confirm Your Score',
+ 	});
+ 
+
+	dialog.addEventListener('click', function(e){
+   		if (e.index === 0)
+    	{	
+    		Ti.UI.currentWindow.removeAllChildren(); 
+    		Ti.UI.currentWindow.add(PleaseWait);
+      		Ti.API.info('The confirm button was clicked');
+    		var xhr = Ti.Network.createHTTPClient();
+    		xhr.open('POST','http://codespikestudios.com/prediction/Test.php');
+    		xhr.setRequestHeader('User-Agent','My User Agent');
+    		xhr.onload = function()
+     		{
+      		//	Ti.API.log("Fr response is : " + this.responseText);
+     		};
+     
+      		xhr.send({
+        		"teamGoalsA":GoalteamAshowing,
+        		"teamGoalsB":GoalteamBshowing,
+        		"FbID":Ti.App.Fbid,
+        		"matchID": Ti.App.MatchID
+			});
+			Get_friends();
+    	}
+    	
+    	if (e.index === 1)
+   		{
+   	//		Ti.API.log('Cancel was clicked');
+   		}
+   		});
+  	dialog.show();	
+
+});
+
+Ti.UI.currentWindow.add(labelGoalA);
+Ti.UI.currentWindow.add(labelGoalB);
+Ti.UI.currentWindow.add(incrementA);
+Ti.UI.currentWindow.add(decrementA);
+Ti.UI.currentWindow.add(incrementB);
+Ti.UI.currentWindow.add(decrementB);
 Ti.UI.currentWindow.add(SubmitButton);
-SubmitButton.hide();
+//SubmitButton.hide();
 
 var PleaseWait = Ti.UI.createLabel({
     text: 'PLEASE WAIT...',
@@ -514,7 +656,7 @@ var PleaseWait = Ti.UI.createLabel({
 });
 
 
-SubmitButton.addEventListener('click', function(e){
+/*SubmitButton.addEventListener('click', function(e){
 	Ti.API.log("Checking Goals: " + parseInt(GoalTeamA) + " " + parseInt(GoalTeamB));
 	
 	if (drawButton.toggle == true)
@@ -670,11 +812,11 @@ SubmitButton.addEventListener('click', function(e){
 		}
 		
 	}
-});
+}); */
 
-Ti.UI.currentWindow.add(winButton);
-Ti.UI.currentWindow.add(drawButton);
-Ti.UI.currentWindow.add(winBButton);
+//Ti.UI.currentWindow.add(winButton);
+//Ti.UI.currentWindow.add(drawButton);
+//Ti.UI.currentWindow.add(winBButton);
 Ti.UI.currentWindow.add(teamAimage);
 Ti.UI.currentWindow.add(teamBimage);
 Ti.UI.currentWindow.add(teamAlabel);

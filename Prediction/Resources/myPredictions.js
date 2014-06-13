@@ -37,12 +37,7 @@ win.addEventListener('youGotFocus', function(e){
 			for (var i = 0; i < predicted_matches.length - 1; i ++)
 			{	
 				
-				tvRow[i] = Ti.UI.createTableViewRow({
-											height:'auto',
-										//	backgroundImage: 'matchSCore.png',	
-											selectedBackgroundColor:'#aa1a2d',
-											backgroundColor:'#aa1a2d'					
-				});
+	
 				
 				var viewH = '80';
 				var topValue = 10 + (viewH * i);
@@ -51,15 +46,24 @@ win.addEventListener('youGotFocus', function(e){
 		        var percentage = (viewH/480)* 100;
 		        var perBtnH = percentage.toString() + '%';			
 				var details = predicted_matches[i].split("$");
+				
+				tvRow[i] = Ti.UI.createTableViewRow({
+											height:'auto',
+										//	backgroundImage: 'matchSCore.png',	
+											selectedBackgroundColor:'#aa1a2d',
+											backgroundColor:'#aa1a2d',
+											teamA: details[4],
+											teamB: details[5],
+											Score: details[0] + "-" + details[1]				
+				});
+				Ti.API.log ("---" + tvRow[i].teamA  + tvRow[i].teamB  + " " + tvRow[i].Score);
 				matches[i] = Ti.UI.createButton({
 					top: perTopValue,
 					height: perBtnH,
 					left: '1%',
 					width: '98%',
 					backgroundImage: 'matchSCore.png',
-					teamA: details[4],
-					teamB: details[5],
-					Score: details[0] + "-" + details[1]
+
 				});
 			  if (details[4] == "Bosnia-&-Herzegovina")
 				{
@@ -149,7 +153,7 @@ win.addEventListener('youGotFocus', function(e){
 		 tvRow[i].add(predicted_score[i]);
 		
 		tvRow[i].addEventListener('click', function(e){
-
+			Ti.API.log("-" + e.source.teamA + "-" + e.source.Score + "-" + e.source.teamB );
 		
 					var data = {
 					    link : "https://apps.facebook.com/witribe_worldcup/",
