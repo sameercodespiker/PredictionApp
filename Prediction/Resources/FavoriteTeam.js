@@ -17,12 +17,13 @@ var TeamRules = Ti.UI.createLabel({
 		fontFamily : Ti.App.customFont
 	},
 	color: 'yellow',
+	width: '80%',
 	center: {x:'50%' , y:'15%'}
 });
 
 var TeamsScrollView = Ti.UI.createScrollView({
 	showHorizontalScrollIndicator: true,
-	top: '10%',
+	top: '20%',
 	height: '60%',
 	scrollType: 'horizontal'
 });
@@ -128,8 +129,8 @@ try
 					{	
 		        		CountryName[i] = Ti.UI.createLabel({
 		        			text: Name,
-		        			color: 'white',
-		        			top: '70%',
+		        			color: 'yellow',
+		        			top: '65%',
 		        			height: '20%',
 		        			font: {
 								fontSize: '20%',
@@ -144,8 +145,8 @@ try
 					{
 						CountryName[i] = Ti.UI.createLabel({
 		        			text: Name,
-		        			color: 'white',
-		        			top: '70%',
+		        			color: 'yellow',
+		        			top: '65%',
 		        			height: '20%',
 		        			font: {
 								fontSize: '20%',
