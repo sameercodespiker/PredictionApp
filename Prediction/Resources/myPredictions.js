@@ -123,16 +123,16 @@ win.addEventListener('youGotFocus', function(e){
 				var teamBname = details[5] + "-Flag-256.png";				
 				teamAimage[i] = Ti.UI.createImageView({
 							bottom: '10%',
-							left: '5%',
+							left: '3%',
 							height: '40%',
-							width: '20%',
+							width: '15%',
 							image: teamAname
 						});
 			    teamBimage[i] = Ti.UI.createImageView({
 							bottom: '10%',
-							right: '5%',
+							right: '3%',
 							height: '40%',
-							width: '20%',
+							width: '15%',
 							image: teamBname
 						}); 
 						

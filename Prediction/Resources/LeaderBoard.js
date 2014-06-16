@@ -80,7 +80,7 @@ overall_leaderboard.addEventListener('click' , function(e){
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont
 				},
-				text: user[4] + ' ' + user[2]
+				text: user[4] + ' . ' + user[2]
 			});
 			tvRow[i].add(scoreLabel[i]);
 			tvRow[i].add(usernamelabel[i]);
@@ -146,7 +146,7 @@ weekly_leaderboard.addEventListener('click', function(e){
 					fontSize: '20%',
 					fontFamily : Ti.App.customFont
 				},
-				text: user[4] + '. ' + user[2]
+				text: user[4] + ' . ' + user[2]
 			});
 			tvRow_b[i].add(scoreLabel[i]);
 			tvRow_b[i].add(usernamelabel[i]);

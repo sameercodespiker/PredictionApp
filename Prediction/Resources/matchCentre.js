@@ -227,23 +227,25 @@ win2.addEventListener('GotFocus', function(e){
 	       							
 	       							var UserPrediction = this.responseText.split("%");
 	       							var labelYouPredicted= Ti.UI.createLabel({
-	       								text: 'YOU PREDICTED ' + '\n' + '\t' + '\t' + UserPrediction[0] + '-' +  UserPrediction[1], 
+	       								text: 'YOU PREDICTED ' + '\n' + UserPrediction[0] + '-' +  UserPrediction[1], 
 	       								font: {
 											fontSize: '25%',
 											fontFamily : Ti.App.customFont
 										},
-										color: 'yellow'
+										color: 'yellow',
+										center: {x:'50%' , y:'60%'},
+										textAlign:'center'
 	       							});
-	       							Ti.API.log("JOJI : *** " + labelYouPredicted.text );
+	       							//Ti.API.log("JOJI : *** " + labelYouPredicted.text );
 	       							AlreadyPredictedWindow.add(labelYouPredicted);
 	       							
 	       						    var teamAname_A = e.source.teamA + "-Flag-256.png";
 									var teamBname_B = e.source.teamB + "-Flag-256.png";	
 									teamAimage = Ti.UI.createImageView({
 										top: '5%',
-										left: '5%',
+										left: '3%',
 										height: '25%',
-										width: '30%',
+										width: '33%',
 										image: teamAname_A
 									});
 									var teamAlabel = Ti.UI.createLabel({
@@ -258,9 +260,9 @@ win2.addEventListener('GotFocus', function(e){
 									});
 									teamBimage = Ti.UI.createImageView({
 										top: '5%',
-										right: '5%',
+										right: '3%',
 										height: '25%',
-										width: '30%',
+										width: '33%',
 										image: teamBname_B
 									}); 
 									var teamBlabel = Ti.UI.createLabel({
@@ -276,7 +278,7 @@ win2.addEventListener('GotFocus', function(e){
 									var score_label = Ti.UI.createLabel({
 										center: {x:'50%' , y:'90%'},
 	       								font: {
-											fontSize: '25%',
+											fontSize: '20%',
 											fontFamily : Ti.App.customFont
 										},
 										color: 'yellow'									
@@ -286,6 +288,7 @@ win2.addEventListener('GotFocus', function(e){
 									{//	Ti.API.log(UserPrediction[4].text);
 										Ti.API.log("I am here");
 										score_label.text = "THIS GAME IS YET TO BE PLAYED";
+										score_label.center = {x:'50%' , y:'90%'};
 										AlreadyPredictedWindow.add(score_label);
 										
 									}

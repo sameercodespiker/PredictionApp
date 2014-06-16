@@ -3,7 +3,7 @@ Ti.include('suds.js');
 var customfont = 'Brasil14';
 if(Ti.Platform.osname=='android') {
    // on Android, use the "base name" of the file (name without extension)
-   customFont = 'Brasil 14';
+   customFont = 'CustomFont';
 } 
 Ti.App.customFont = customfont;
 
