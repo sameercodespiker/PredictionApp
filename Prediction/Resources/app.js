@@ -5,7 +5,7 @@ if(Ti.Platform.osname=='android') {
    // on Android, use the "base name" of the file (name without extension)
    customFont = 'CustomFont';
 } 
-Ti.App.customFont = customfont;
+Ti.App.customFont = customFont;
 
 
 
